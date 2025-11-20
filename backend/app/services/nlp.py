@@ -136,28 +136,43 @@ def predict_entities(text: str) -> Dict[str, Optional[str]]:
         return {}
 
     try:
-        # Tokenize input
+        # Split into words
+        words = text.split()
+        
+        # Tokenize with is_split_into_words=True
         inputs = ner_tokenizer(
-            text,
+            words,
+            is_split_into_words=True,
             return_tensors="pt",
             truncation=True,
             max_length=512,
-            padding=True,
-            return_offsets_mapping=True
+            padding=True
         )
-
-        offset_mapping = inputs.pop("offset_mapping")[0]
-        inputs = inputs.to(device)
+        
+        inputs_on_device = {k: v.to(device) for k, v in inputs.items()}
 
         # Get predictions
         with torch.no_grad():
-            outputs = ner_model(**inputs)
+            outputs = ner_model(**inputs_on_device)
             predictions = torch.argmax(outputs.logits, dim=-1)[0]
 
-        # Decode tokens
-        tokens = ner_tokenizer.convert_ids_to_tokens(inputs["input_ids"][0])
+        # Use word_ids to map tokens back to words
+        word_ids = inputs.word_ids(batch_index=0)
+        
+        # Get one prediction per word (use first subword token's prediction)
+        word_predictions = []
+        previous_word_id = None
+        
+        for idx, word_id in enumerate(word_ids):
+            if word_id is None:  # Special tokens
+                continue
+            if word_id != previous_word_id:  # First token of a new word
+                pred_id = predictions[idx].item()
+                label = NER_LABELS.get(pred_id, "O")
+                word_predictions.append((words[word_id], label))
+                previous_word_id = word_id
 
-        # Extract entities from predictions
+        # Extract entities from word-level predictions
         entities = {
             "cancer_type": None,
             "age": None,
@@ -166,53 +181,43 @@ def predict_entities(text: str) -> Dict[str, Optional[str]]:
         }
 
         current_entity = None
-        current_tokens = []
+        current_words = []
 
-        for idx, (token, pred_id) in enumerate(zip(tokens, predictions)):
-            if token in ["[CLS]", "[SEP]", "[PAD]"]:
-                continue
-
-            label = NER_LABELS.get(pred_id.item(), "O")
-
+        for word, label in word_predictions:
             # Handle B- (beginning) tags
             if label.startswith("B-"):
                 # Save previous entity if exists
-                if current_entity and current_tokens:
-                    entity_text = ner_tokenizer.convert_tokens_to_string(
-                        current_tokens).strip()
-                    entity_type = current_entity.lower().replace("_", "_")
+                if current_entity and current_words:
+                    entity_text = " ".join(current_words)
+                    entity_type = current_entity.lower()
                     if entity_type in entities:
                         entities[entity_type] = entity_text
 
                 # Start new entity
                 current_entity = label[2:]  # Remove "B-"
-                current_tokens = [token]
+                current_words = [word]
 
             # Handle I- (inside) tags
             elif label.startswith("I-") and current_entity:
-                entity_type = label[2:]  # Remove "I-"
+                entity_type = label[2:]
                 if entity_type == current_entity:
-                    current_tokens.append(token)
+                    current_words.append(word)
 
             # Handle O (outside) tags
             else:
                 # Save previous entity if exists
-                if current_entity and current_tokens:
-                    entity_text =
-                    ner_tokenizer.convert_tokens_to_string(
-                        current_tokens).strip()
-                    entity_type = current_entity.lower().replace("_", "_")
+                if current_entity and current_words:
+                    entity_text = " ".join(current_words)
+                    entity_type = current_entity.lower()
                     if entity_type in entities:
                         entities[entity_type] = entity_text
-
                 current_entity = None
-                current_tokens = []
+                current_words = []
 
-        # In order to not forget last entity
-        if current_entity and current_tokens:
-            entity_text =
-            ner_tokenizer.convert_tokens_to_string(current_tokens).strip()
-            entity_type = current_entity.lower().replace("_", "_")
+        # Last entity
+        if current_entity and current_words:
+            entity_text = " ".join(current_words)
+            entity_type = current_entity.lower()
             if entity_type in entities:
                 entities[entity_type] = entity_text
 
@@ -222,7 +227,6 @@ def predict_entities(text: str) -> Dict[str, Optional[str]]:
     except Exception as e:
         logger.error(f"Error extracting entities: {str(e)}")
         return {}
-
 
 def extract_entities(user_input: str) -> Dict[str, Optional[str]]:
     """
@@ -243,13 +247,18 @@ def extract_entities(user_input: str) -> Dict[str, Optional[str]]:
             'age': '65'
         }
     """
+    print(f"NLP: Processing user input: {user_input}")
     logger.info(f"Processing user input: {user_input}")
 
     # Get intent
     intent = predict_intent(user_input)
+    print(f"NLP: Predicted intent: {intent}")
+
 
     # Get entities
     entities = predict_entities(user_input)
+    print(f"NLP: Extracted entities: {entities}")
+
 
     # Build response
     result = {
@@ -263,5 +272,6 @@ def extract_entities(user_input: str) -> Dict[str, Optional[str]]:
     # Clean up None values from result (keeps response cleaner)
     result = {k: v for k, v in result.items() if v is not None}
 
+    print(f"NLP: Final result: {result}")
     logger.info(f"Final result: {result}")
     return result
