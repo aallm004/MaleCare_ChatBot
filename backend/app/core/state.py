@@ -13,7 +13,7 @@ class ConversationState:
 
     def is_complete(self) -> bool:
         """Check if enough info is collected to query trials."""
-        required_fields = [self.cancer_type, self.stage, self.location]
+        required_fields = [self.cancer_type, self.location]
         return all(required_fields)
 
     def to_dict(self):

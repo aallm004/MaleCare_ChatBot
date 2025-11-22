@@ -14,13 +14,23 @@ async def handle_message(request: Request):
     # Retrieve or initialize user state
     state = active_states.get(user_id, ConversationState())
 
-    # 1️⃣ NLP entity extraction
+    # 1 NLP entity extraction
     entities = nlp.extract_entities(user_input)
     for key, value in entities.items():
         if hasattr(state, key):
             setattr(state, key, value)
 
-    # 2️⃣ If complete, query trials
+    # 2 Handle non-find_trials intents
+    if entities.get("intent") == "greeting":
+        response = {"response": "Hello! I can help you find clinical trials. What type of cancer are you researching?"}
+        active_states[user_id] = state
+        return response
+    elif entities.get("intent") == "goodbye":
+        response = {"response": "Goodbye! Feel free to return anytime you need help finding clinical trials."}
+        active_states[user_id] = state
+        return response
+    
+    # 3 If complete, query trials
     if state.is_complete() and entities.get("intent") == "find_trials":
         trials = await clinicaltrials_api.search_clinical_trials(state.cancer_type, state.location)
         response = {
@@ -28,12 +38,10 @@ async def handle_message(request: Request):
             "trials": trials
         }
     else:
-        # 3️⃣ Continue intake flow
+        # 4 Continue intake flow
         missing_fields = []
         if not state.cancer_type:
             missing_fields.append("cancer type")
-        elif not state.stage:
-            missing_fields.append("stage")
         elif not state.location:
             missing_fields.append("location")
 
