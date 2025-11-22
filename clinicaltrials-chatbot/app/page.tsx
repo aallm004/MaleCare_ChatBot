@@ -121,6 +121,7 @@ export default function ChatPage() {
 
           <div className="relative max-w-md mx-auto w-full">
             <Card className="p-4 space-y-4 w-full animate-fadeIn">
+              {/* the backend messages will go here */}
               <CardContent ref={listRef} onScroll={updateScrollPercent} className="h-96 overflow-y-auto flex flex-col gap-8">
               {messages.map((m) => (
                 <div
@@ -134,6 +135,7 @@ export default function ChatPage() {
 
                   <div className={`px-3 py-2 rounded-2xl max-w-[80%] ${m.from === "user" ? "bg-blue-100" : "bg-red-300"} animate-fadeIn`}> 
                     <div className="whitespace-pre-wrap">{m.text}</div>
+                    {/* provides a timestamp of conversation  */}
                     <div className="text-xs text-muted-foreground mt-1 text-right">{m.time}</div>
                   </div>
 
@@ -147,10 +149,25 @@ export default function ChatPage() {
 
               </CardContent>
 
-              <form onSubmit={handleSubmit} className="flex gap-2">
+              <form onSubmit={handleSubmit} className="flex gap-2 hover:bg-red-300">
               <Input value={inputValue} onChange={(e) => setInputValue(e.target.value)} placeholder="Ask about a clinical trial..." />
               <Button type="submit" className="text-teal-300 hover:bg-red-300">Send</Button>
             </form>
+                        {/* Disclaimer footer below the input */}
+                        <div className="mt-3 text-xs text-muted-foreground text-center px-2">
+                          <p>
+                            <b>Disclaimer:</b> This chatbot does not provide medical advice. We encourage you to discuss all results and further questions with a clinician. Clinical trial information is taken from{' '}
+                            <a
+                              href="https://clinicaltrials.gov/"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-primary underline"
+                            >
+                              clinicaltrials.gov
+                            </a>
+                            .
+                          </p>
+                        </div>
             </Card>
 
             {/* Vertical slider control on the right to control scroll position */}
