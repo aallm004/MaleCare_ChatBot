@@ -22,6 +22,8 @@ from transformers import (
 )
 import pandas as pd
 from typing import List, Dict, Tuple
+import seqeval
+import evaluate
 
 
 class PrinterCallback(TrainerCallback):
@@ -132,7 +134,7 @@ class IntentClassifier:
 
     def train(self, training_data: List[Dict],
               validation_split=0.2,
-              epochs=3,
+              epochs=20,
               batch_size=16,
               learning_rate=2e-5,
               output_dir='./intent_model'):
@@ -184,14 +186,15 @@ class IntentClassifier:
             per_device_train_batch_size=batch_size,
             per_device_eval_batch_size=batch_size,
             learning_rate=learning_rate,
-            evaluation_strategy="epoch",
-            save_strategy="epoch",
-            load_best_model_at_end=True,
+            eval_strategy="epoch",
+            save_strategy="no",
+            save_total_limit=1,
+            load_best_model_at_end=False,
             metric_for_best_model="eval_loss",
             warmup_steps=100,
             weight_decay=0.01,
             logging_dir=f'{output_dir}/logs',
-            logging_steps=10,
+            logging_steps=10
         )
 
         # Trainer with callback
@@ -200,6 +203,7 @@ class IntentClassifier:
             args=training_args,
             train_dataset=train_dataset,
             eval_dataset=val_dataset,
+            compute_metrics=compute_intent_metrics,
             callbacks=[PrinterCallback()])
 
         # Train
@@ -231,18 +235,18 @@ class IntentClassifier:
         return results
 
     def predict(self, text: str) -> Tuple[str, float]:
-        """Predict intent for a given text.
+        """Extract entities from text.
 
         Args:
             text: Input text
 
         Returns:
-            Tuple of (predicted_intent, confidence_score)
+            List of extracted entities with their types and positions
         """
         if self.model is None:
             raise ValueError("Model not trained yet. Call train() first")
 
-        # tokenize
+        # encode the tokens list for
         encoding = self.tokenizer(
             text,
             add_special_tokens=True,
@@ -294,14 +298,22 @@ class NERDataset(Dataset):
         )
 
         # Align labels with tokens
-        word_ids = encoding.word_ids()
+        word_ids = encoding.word_ids(batch_index=0)  # Get word_ids for first sequence
         label_ids = []
+        previous_word_id = None
 
         for word_id in word_ids:
             if word_id is None:
                 label_ids.append(-100)  # special tokens
+            elif word_id != previous_word_id:  # Only label first token of each word
+                if tags[word_id] not in self.label_map:
+                    print(f"Warning: Unknown tag '{tags[word_id]}' found, using 'O'")
+                    label_ids.append(self.label_map['O'])
+                else:
+                    label_ids.append(self.label_map[tags[word_id]])
             else:
-                label_ids.append(self.label_map[tags[word_id]])
+                label_ids.append(-100)  # Subsequent tokens of same word
+            previous_word_id = word_id
 
         encoding['labels'] = torch.tensor(label_ids, dtype=torch.long)
 
@@ -320,10 +332,8 @@ class ClinicalNER:
         'O',  # Outside any entity
         'B-CANCER_TYPE', 'I-CANCER_TYPE',
         'B-AGE', 'I-AGE',
+        'B-SEX', 'I-SEX',
         'B-LOCATION', 'I-LOCATION',
-        'B-BIOMARKER', 'I-BIOMARKER',
-        'B-TREATMENT', 'I-TREATMENT',
-        'B-COMORBIDITY', 'I-COMORBIDITY'
     ]
 
     def __init__(self, model_name='emilyalsentzer/Bio_ClinicalBERT'):
@@ -356,7 +366,7 @@ class ClinicalNER:
 
     def train(self, training_data: List[Dict],
               validation_split=0.2,
-              epochs=3,
+              epochs=20,
               batch_size=16,
               learning_rate=3e-5,
               output_dir='./ner_model'):
@@ -412,14 +422,17 @@ class ClinicalNER:
             per_device_train_batch_size=batch_size,
             per_device_eval_batch_size=batch_size,
             learning_rate=learning_rate,
-            evaluation_strategy="epoch",
-            save_strategy="epoch",
-            load_best_model_at_end=True,
+            eval_strategy="epoch",
+            save_strategy="no",
+            load_best_model_at_end=False,
+            metric_for_best_model="eval_f1",
             warmup_steps=100,
             weight_decay=0.01,
             logging_dir=f'{output_dir}/logs',
             logging_steps=10
         )
+
+        label_list = self.ENTITY_TYPES
 
         trainer = Trainer(
             model=self.model,
@@ -427,6 +440,8 @@ class ClinicalNER:
             train_dataset=train_dataset,
             eval_dataset=val_dataset,
             data_collator=data_collator,
+            compute_metrics=lambda p:
+            compute_ner_metrics(p, label_list=label_list),
             callbacks=[PrinterCallback()]
         )
 
@@ -469,8 +484,8 @@ class ClinicalNER:
         if self.model is None:
             raise ValueError("Model not trained. Call train() first.")
 
-        # Tokenize
         tokens = text.split()
+
         encoding = self.tokenizer(
             tokens,
             is_split_into_words=True,
@@ -486,15 +501,23 @@ class ClinicalNER:
             predictions = torch.argmax(outputs.logits, dim=2)
 
         # Extract entities
-        word_ids = encoding.word_ids()
+        word_ids = encoding.word_ids(batch_index=0)
         entities = []
         current_entity = None
+        previous_word_id = None
 
-        for idx, (word_id, pred_id) in enumerate(zip(word_ids,
-                                                     predictions[0])):
+        for idx, word_id in enumerate(word_ids):
             if word_id is None:
                 continue
 
+            # Skip if this is a continuation of a subword token
+            if word_id == previous_word_id:
+                continue
+
+            if word_id >= len(tokens):  # Safety check
+                continue
+
+            pred_id = predictions[0][idx]
             label = self.reverse_label_map[pred_id.item()]
 
             if label.startswith('B-'):
@@ -512,17 +535,19 @@ class ClinicalNER:
                 if label[2:] == current_entity['type']:
                     current_entity['text'] += ' ' + tokens[word_id]
                     current_entity['end'] = word_id
-
             else:
                 # Outside entity
                 if current_entity:
                     entities.append(current_entity)
                     current_entity = None
 
+            previous_word_id = word_id
+
         if current_entity:
             entities.append(current_entity)
 
         return entities
+
 
 # HELPER FUNCTIONS
 
@@ -540,6 +565,78 @@ def load_ner_training_data(filepath: str) -> List[Dict]:
         data = json.load(f)
     return data
 
+intent_accuracy_metric = evaluate.load("accuracy")
+intent_precision_metric = evaluate.load("precision")
+intent_recall_metric = evaluate.load("recall")
+intent_f1_metric = evaluate.load("f1")
+ner_metric = evaluate.load("seqeval")
+
+
+def compute_intent_metrics(p):
+    """Compute metrics for intent classification"""
+    preds = np.argmax(p.predictions, axis=1)
+    accuracy = intent_accuracy_metric.compute(predictions=preds,
+                                            references=p.label_ids)["accuracy"]
+    precision = intent_precision_metric.compute(predictions=preds,
+                                              references=p.label_ids,
+                                              average='weighted')["precision"]
+    recall = intent_recall_metric.compute(predictions=preds,
+                                        references=p.label_ids,
+                                        average='weighted')["recall"]
+    f1 = intent_f1_metric.compute(predictions=preds,
+                                references=p.label_ids,
+                                average='weighted')["f1"]
+    return {
+        'eval_accuracy': accuracy,
+        'eval_f1': f1,
+        'eval_precision': precision,
+        'eval_recall': recall,
+    }
+
+
+def compute_ner_metrics(p, label_list):
+    """Compute metrics for NER"""
+
+    preds = np.argmax(p.predictions, axis=2)
+    labels = p.label_ids
+
+    # Convert to label names
+    true_predictions = []
+    true_labels = []
+
+    for pred, label in zip(preds, labels):
+        pred_labels = []
+        true_label_list = []
+        for p_id, l_id in zip(pred, label):
+            if l_id != -100:
+                pred_labels.append(label_list[p_id])
+                true_label_list.append(label_list[l_id])
+
+        # Only add non-empty sequences
+        if pred_labels and true_label_list:
+            true_predictions.append(pred_labels)
+            true_labels.append(true_label_list)
+
+    # Check if we have any valid sequences
+    if not true_predictions or not true_labels:
+        return {
+            "eval_precision": 0.0,
+            "eval_recall": 0.0,
+            "eval_f1": 0.0,
+            "eval_accuracy": 0.0,
+        }
+
+    # Compute metrics using seqeval library
+    results = ner_metric.compute(predictions=true_predictions,
+                                  references=true_labels)
+
+    # Return overall metrics
+    return {
+        "eval_precision": results["overall_precision"],
+        "eval_recall": results["overall_recall"],
+        "eval_f1": results["overall_f1"],
+        "eval_accuracy": results["overall_accuracy"],
+    }
 
 def main():
     """Main function for training models"""

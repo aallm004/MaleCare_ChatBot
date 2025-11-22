@@ -49,7 +49,7 @@ def train_intent_model():
     num_intents = len(set(item['intent'] for item in training_data))
     intent_model = IntentClassifier(
         model_name="emilyalsentzer/Bio_ClinicalBERT",
-        num_labels=num_intents)
+        num_labels=3)
     
     # Train model
     print("\n Starting training...")
@@ -58,7 +58,7 @@ def train_intent_model():
     results = intent_model.train(
         training_data=training_data,
         validation_split=0.2,
-        epochs=3,
+        epochs=20,
         batch_size=16,
         learning_rate=2e-5,
         output_dir="./models/intent_model"
@@ -123,7 +123,7 @@ def train_ner_model():
     results = ner_model.train(
         training_data=training_data,
         validation_split=0.2,
-        epochs=3,
+        epochs=20,
         batch_size=16,
         learning_rate=3e-5,
         output_dir="./models/ner_model"

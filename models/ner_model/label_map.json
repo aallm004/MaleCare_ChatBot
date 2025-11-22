@@ -1,0 +1,11 @@
+{
+  "O": 0,
+  "B-CANCER_TYPE": 1,
+  "I-CANCER_TYPE": 2,
+  "B-AGE": 3,
+  "I-AGE": 4,
+  "B-SEX": 5,
+  "I-SEX": 6,
+  "B-LOCATION": 7,
+  "I-LOCATION": 8
+}

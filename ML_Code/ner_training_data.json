@@ -1,0 +1,301 @@
+[
+  {"tokens": ["I", "have", "prostate", "cancer", "in", "New", "York"],
+  "tags": ["O", "O", "B-CANCER_TYPE", "I-CANCER_TYPE", "O", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Looking", "for", "trials", "for", "breast", "cancer", "in", "Los", "Angeles"],
+  "tags": ["O", "O", "O", "O", "B-CANCER_TYPE", "I-CANCER_TYPE", "O", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["I'm", "55", "years", "old", "with", "lung", "cancer"],
+  "tags": ["O", "B-AGE", "I-AGE", "I-AGE", "O", "B-CANCER_TYPE", "I-CANCER_TYPE"]},
+  
+  {"tokens": ["Male", "with", "prostate", "cancer", "in", "San", "Francisco"],
+  "tags": ["B-SEX", "O", "B-CANCER_TYPE", "I-CANCER_TYPE", "O", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Have", "breast", "cancer", "near", "Salt", "Lake", "City"],
+  "tags": ["O", "B-CANCER_TYPE", "I-CANCER_TYPE", "O", "B-LOCATION", "I-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["62", "year", "old", "male", "with", "lung", "cancer", "in", "Boston"],
+  "tags": ["B-AGE", "I-AGE", "I-AGE", "B-SEX", "O", "B-CANCER_TYPE", "I-CANCER_TYPE", "O", "B-LOCATION"]},
+  
+  {"tokens": ["Female", "diagnosed", "with", "breast", "cancer", "in", "Chicago"],
+  "tags": ["B-SEX", "O", "O", "B-CANCER_TYPE", "I-CANCER_TYPE", "O", "B-LOCATION"]},
+  
+  {"tokens": ["Lung", "cancer", "in", "San", "Diego"],
+  "tags": ["B-CANCER_TYPE", "I-CANCER_TYPE", "O", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["I", "am", "a", "67", "year", "old", "man", "from", "Houston"],
+  "tags": ["O", "O", "O", "B-AGE", "I-AGE", "I-AGE", "B-SEX", "O", "B-LOCATION"]},
+  
+  {"tokens": ["Looking", "for", "trials", "in", "New", "Orleans"],
+  "tags": ["O", "O", "O", "O", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["I'm", "a", "45", "year", "old", "female", "with", "breast", "cancer", "in", "Miami"],
+  "tags": ["O", "O", "B-AGE", "I-AGE", "I-AGE", "B-SEX", "O", "B-CANCER_TYPE", "I-CANCER_TYPE", "O", "B-LOCATION"]},
+  
+  {"tokens": ["Male", "patient", "age", "58", "prostate", "cancer", "in", "Seattle"],
+  "tags": ["B-SEX", "O", "O", "B-AGE", "B-CANCER_TYPE", "I-CANCER_TYPE", "O", "B-LOCATION"]},
+  
+  {"tokens": ["Breast", "cancer", "in", "Las", "Vegas", "Nevada"],
+  "tags": ["B-CANCER_TYPE", "I-CANCER_TYPE", "O", "B-LOCATION", "I-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Recently", "diagnosed", "lung", "cancer", "in", "Portland"],
+  "tags": ["O", "O", "B-CANCER_TYPE", "I-CANCER_TYPE", "O", "B-LOCATION"]},
+  
+  {"tokens": ["Need", "trials", "near", "San", "Antonio", "Texas"],
+  "tags": ["O", "O", "O", "B-LOCATION", "I-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["I", "am", "45", "years", "old", "female", "in", "Denver"],
+  "tags": ["O", "O", "B-AGE", "I-AGE", "I-AGE", "B-SEX", "O", "B-LOCATION"]},
+  
+  {"tokens": ["Living", "in", "New", "Jersey", "with", "prostate", "cancer"],
+  "tags": ["O", "O", "B-LOCATION", "I-LOCATION", "O", "B-CANCER_TYPE", "I-CANCER_TYPE"]},
+  
+  {"tokens": ["I'm", "70", "with", "breast", "cancer", "in", "Phoenix"],
+  "tags": ["O", "B-AGE", "O", "B-CANCER_TYPE", "I-CANCER_TYPE", "O", "B-LOCATION"]},
+  
+  {"tokens": ["Female", "52", "lung", "cancer", "Dallas", "Texas"],
+  "tags": ["B-SEX", "B-AGE", "B-CANCER_TYPE", "I-CANCER_TYPE", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Man", "with", "prostate", "cancer", "in", "Philadelphia"],
+  "tags": ["B-SEX", "O", "B-CANCER_TYPE", "I-CANCER_TYPE", "O", "B-LOCATION"]},
+  
+  {"tokens": ["I", "am", "61", "male", "breast", "cancer", "Fort", "Worth"],
+  "tags": ["O", "O", "B-AGE", "B-SEX", "B-CANCER_TYPE", "I-CANCER_TYPE", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Woman", "age", "48", "lung", "cancer", "in", "Austin"],
+  "tags": ["B-SEX", "O", "B-AGE", "B-CANCER_TYPE", "I-CANCER_TYPE", "O", "B-LOCATION"]},
+  
+  {"tokens": ["56", "year", "old", "looking", "for", "trials", "in", "San", "Jose"],
+  "tags": ["B-AGE", "I-AGE", "I-AGE", "O", "O", "O", "O", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Prostate", "cancer", "patient", "male", "38", "in", "Indianapolis"],
+  "tags": ["B-CANCER_TYPE", "I-CANCER_TYPE", "O", "B-SEX", "B-AGE", "O", "B-LOCATION"]},
+  
+  {"tokens": ["Female", "with", "breast", "cancer", "near", "Fort", "Lauderdale"],
+  "tags": ["B-SEX", "O", "B-CANCER_TYPE", "I-CANCER_TYPE", "O", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["63", "years", "old", "man", "from", "Columbus", "Ohio"],
+  "tags": ["B-AGE", "I-AGE", "I-AGE", "B-SEX", "O", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Lung", "cancer", "71", "female", "Charlotte", "North", "Carolina"],
+  "tags": ["B-CANCER_TYPE", "I-CANCER_TYPE", "B-AGE", "B-SEX", "B-LOCATION", "I-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Male", "44", "prostate", "cancer", "in", "Nashville"],
+  "tags": ["B-SEX", "B-AGE", "B-CANCER_TYPE", "I-CANCER_TYPE", "O", "B-LOCATION"]},
+  
+  {"tokens": ["I'm", "a", "woman", "age", "59", "with", "breast", "cancer", "in", "Memphis"],
+  "tags": ["O", "O", "B-SEX", "O", "B-AGE", "O", "B-CANCER_TYPE", "I-CANCER_TYPE", "O", "B-LOCATION"]},
+  
+  {"tokens": ["Prostate", "cancer", "male", "patient", "68", "Washington", "DC"],
+  "tags": ["B-CANCER_TYPE", "I-CANCER_TYPE", "B-SEX", "O", "B-AGE", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["66", "year", "old", "female", "in", "Baltimore"],
+  "tags": ["B-AGE", "I-AGE", "I-AGE", "B-SEX", "O", "B-LOCATION"]},
+  
+  {"tokens": ["Man", "diagnosed", "with", "lung", "cancer", "El", "Paso"],
+  "tags": ["B-SEX", "O", "O", "B-CANCER_TYPE", "I-CANCER_TYPE", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Breast", "cancer", "42", "male", "in", "Detroit"],
+  "tags": ["B-CANCER_TYPE", "I-CANCER_TYPE", "B-AGE", "B-SEX", "O", "B-LOCATION"]},
+  
+  {"tokens": ["Female", "patient", "73", "prostate", "cancer", "Milwaukee"],
+  "tags": ["B-SEX", "O", "B-AGE", "B-CANCER_TYPE", "I-CANCER_TYPE", "B-LOCATION"]},
+  
+  {"tokens": ["I", "have", "lung", "cancer", "and", "I'm", "51", "in", "Albuquerque", "New", "Mexico"],
+  "tags": ["O", "O", "B-CANCER_TYPE", "I-CANCER_TYPE", "O", "O", "B-AGE", "O", "B-LOCATION", "I-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Breast", "cancer", "in", "Tucson", "Arizona"],
+  "tags": ["B-CANCER_TYPE", "I-CANCER_TYPE", "O", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Male", "60", "looking", "for", "trials", "in", "Fresno"],
+  "tags": ["B-SEX", "B-AGE", "O", "O", "O", "O", "B-LOCATION"]},
+  
+  {"tokens": ["Woman", "with", "prostate", "cancer", "43", "years", "old", "Sacramento"],
+  "tags": ["B-SEX", "O", "B-CANCER_TYPE", "I-CANCER_TYPE", "B-AGE", "I-AGE", "I-AGE", "B-LOCATION"]},
+  
+  {"tokens": ["I", "am", "72", "male", "in", "Kansas", "City"],
+  "tags": ["O", "O", "B-AGE", "B-SEX", "O", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Lung", "cancer", "trials", "near", "Long", "Beach"],
+  "tags": ["B-CANCER_TYPE", "I-CANCER_TYPE", "O", "O", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Female", "69", "breast", "cancer", "Mesa", "Arizona"],
+  "tags": ["B-SEX", "B-AGE", "B-CANCER_TYPE", "I-CANCER_TYPE", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["I'm", "a", "49", "year", "old", "man", "in", "Atlanta"],
+  "tags": ["O", "O", "B-AGE", "I-AGE", "I-AGE", "B-SEX", "O", "B-LOCATION"]},
+  
+  {"tokens": ["Prostate", "cancer", "Virginia", "Beach"],
+  "tags": ["B-CANCER_TYPE", "I-CANCER_TYPE", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Male", "patient", "53", "lung", "cancer", "Colorado", "Springs"],
+  "tags": ["B-SEX", "O", "B-AGE", "B-CANCER_TYPE", "I-CANCER_TYPE", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Woman", "64", "breast", "cancer", "Raleigh", "North", "Carolina"],
+  "tags": ["B-SEX", "B-AGE", "B-CANCER_TYPE", "I-CANCER_TYPE", "B-LOCATION", "I-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["I", "have", "prostate", "cancer", "age", "37", "in", "Omaha"],
+  "tags": ["O", "O", "B-CANCER_TYPE", "I-CANCER_TYPE", "O", "B-AGE", "O", "B-LOCATION"]},
+  
+  {"tokens": ["Female", "with", "lung", "cancer", "in", "Minneapolis"],
+  "tags": ["B-SEX", "O", "B-CANCER_TYPE", "I-CANCER_TYPE", "O", "B-LOCATION"]},
+  
+  {"tokens": ["Breast", "cancer", "patient", "male", "75", "Tulsa", "Oklahoma"],
+  "tags": ["B-CANCER_TYPE", "I-CANCER_TYPE", "O", "B-SEX", "B-AGE", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["I'm", "a", "41", "year", "old", "woman", "with", "prostate", "cancer", "in", "Wichita"],
+  "tags": ["O", "O", "B-AGE", "I-AGE", "I-AGE", "B-SEX", "O", "B-CANCER_TYPE", "I-CANCER_TYPE", "O", "B-LOCATION"]},
+  
+  {"tokens": ["Male", "57", "lung", "cancer", "New", "Orleans", "Louisiana"],
+  "tags": ["B-SEX", "B-AGE", "B-CANCER_TYPE", "I-CANCER_TYPE", "B-LOCATION", "I-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Woman", "age", "65", "breast", "cancer", "Arlington", "Texas"],
+  "tags": ["B-SEX", "O", "B-AGE", "B-CANCER_TYPE", "I-CANCER_TYPE", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Prostate", "cancer", "35", "female", "Bakersfield"],
+  "tags": ["B-CANCER_TYPE", "I-CANCER_TYPE", "B-AGE", "B-SEX", "B-LOCATION"]},
+  
+  {"tokens": ["I", "am", "a", "54", "year", "old", "male", "in", "Tampa", "Florida"],
+  "tags": ["O", "O", "O", "B-AGE", "I-AGE", "I-AGE", "B-SEX", "O", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Lung", "cancer", "in", "Aurora", "Colorado"],
+  "tags": ["B-CANCER_TYPE", "I-CANCER_TYPE", "O", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Female", "patient", "68", "breast", "cancer", "Anaheim"],
+  "tags": ["B-SEX", "O", "B-AGE", "B-CANCER_TYPE", "I-CANCER_TYPE", "B-LOCATION"]},
+  
+  {"tokens": ["Man", "with", "prostate", "cancer", "59", "years", "old", "Santa", "Ana"],
+  "tags": ["B-SEX", "O", "B-CANCER_TYPE", "I-CANCER_TYPE", "B-AGE", "I-AGE", "I-AGE", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["I'm", "46", "female", "lung", "cancer", "in", "St", "Louis"],
+  "tags": ["O", "B-AGE", "B-SEX", "B-CANCER_TYPE", "I-CANCER_TYPE", "O", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Breast", "cancer", "male", "71", "Riverside", "California"],
+  "tags": ["B-CANCER_TYPE", "I-CANCER_TYPE", "B-SEX", "B-AGE", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Woman", "52", "prostate", "cancer", "Corpus", "Christi"],
+  "tags": ["B-SEX", "B-AGE", "B-CANCER_TYPE", "I-CANCER_TYPE", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Lung", "cancer", "patient", "39", "male", "Lexington", "Kentucky"],
+  "tags": ["B-CANCER_TYPE", "I-CANCER_TYPE", "O", "B-AGE", "B-SEX", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Female", "67", "breast", "cancer", "Pittsburgh"],
+  "tags": ["B-SEX", "B-AGE", "B-CANCER_TYPE", "I-CANCER_TYPE", "B-LOCATION"]},
+  
+  {"tokens": ["I", "have", "prostate", "cancer", "and", "live", "in", "Anchorage", "Alaska"],
+  "tags": ["O", "O", "B-CANCER_TYPE", "I-CANCER_TYPE", "O", "O", "O", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Male", "62", "lung", "cancer", "Stockton"],
+  "tags": ["B-SEX", "B-AGE", "B-CANCER_TYPE", "I-CANCER_TYPE", "B-LOCATION"]},
+  
+  {"tokens": ["Woman", "age", "74", "breast", "cancer", "Cincinnati"],
+  "tags": ["B-SEX", "O", "B-AGE", "B-CANCER_TYPE", "I-CANCER_TYPE", "B-LOCATION"]},
+  
+  {"tokens": ["Prostate", "cancer", "56", "male", "Saint", "Paul"],
+  "tags": ["B-CANCER_TYPE", "I-CANCER_TYPE", "B-AGE", "B-SEX", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["I'm", "a", "43", "year", "old", "female", "in", "Toledo", "Ohio"],
+  "tags": ["O", "O", "B-AGE", "I-AGE", "I-AGE", "B-SEX", "O", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Lung", "cancer", "in", "Newark", "New", "Jersey"],
+  "tags": ["B-CANCER_TYPE", "I-CANCER_TYPE", "O", "B-LOCATION", "I-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Male", "with", "breast", "cancer", "58", "years", "old", "Greensboro"],
+  "tags": ["B-SEX", "O", "B-CANCER_TYPE", "I-CANCER_TYPE", "B-AGE", "I-AGE", "I-AGE", "B-LOCATION"]},
+  
+  {"tokens": ["Female", "patient", "69", "prostate", "cancer", "Plano", "Texas"],
+  "tags": ["B-SEX", "O", "B-AGE", "B-CANCER_TYPE", "I-CANCER_TYPE", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Woman", "47", "lung", "cancer", "Henderson", "Nevada"],
+  "tags": ["B-SEX", "B-AGE", "B-CANCER_TYPE", "I-CANCER_TYPE", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["I", "am", "64", "male", "breast", "cancer", "in", "Lincoln"],
+  "tags": ["O", "O", "B-AGE", "B-SEX", "B-CANCER_TYPE", "I-CANCER_TYPE", "O", "B-LOCATION"]},
+  
+  {"tokens": ["Prostate", "cancer", "in", "Buffalo", "New", "York"],
+  "tags": ["B-CANCER_TYPE", "I-CANCER_TYPE", "O", "B-LOCATION", "I-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Female", "55", "lung", "cancer", "Jersey", "City"],
+  "tags": ["B-SEX", "B-AGE", "B-CANCER_TYPE", "I-CANCER_TYPE", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Male", "patient", "age", "76", "breast", "cancer", "Chula", "Vista"],
+  "tags": ["B-SEX", "O", "O", "B-AGE", "B-CANCER_TYPE", "I-CANCER_TYPE", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Woman", "with", "prostate", "cancer", "50", "years", "old", "Madison", "Wisconsin"],
+  "tags": ["B-SEX", "O", "B-CANCER_TYPE", "I-CANCER_TYPE", "B-AGE", "I-AGE", "I-AGE", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["I'm", "38", "male", "lung", "cancer", "Fort", "Wayne"],
+  "tags": ["O", "B-AGE", "B-SEX", "B-CANCER_TYPE", "I-CANCER_TYPE", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Breast", "cancer", "patient", "female", "61", "St", "Petersburg"],
+  "tags": ["B-CANCER_TYPE", "I-CANCER_TYPE", "O", "B-SEX", "B-AGE", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Male", "70", "prostate", "cancer", "Laredo", "Texas"],
+  "tags": ["B-SEX", "B-AGE", "B-CANCER_TYPE", "I-CANCER_TYPE", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Woman", "age", "45", "lung", "cancer", "Lubbock"],
+  "tags": ["B-SEX", "O", "B-AGE", "B-CANCER_TYPE", "I-CANCER_TYPE", "B-LOCATION"]},
+  
+  {"tokens": ["Breast", "cancer", "57", "female", "Chandler", "Arizona"],
+  "tags": ["B-CANCER_TYPE", "I-CANCER_TYPE", "B-AGE", "B-SEX", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["I", "have", "prostate", "cancer", "male", "65", "in", "Scottsdale"],
+  "tags": ["O", "O", "B-CANCER_TYPE", "I-CANCER_TYPE", "B-SEX", "B-AGE", "O", "B-LOCATION"]},
+  
+  {"tokens": ["Lung", "cancer", "in", "Reno", "Nevada"],
+  "tags": ["B-CANCER_TYPE", "I-CANCER_TYPE", "O", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Female", "patient", "72", "breast", "cancer", "Irving", "Texas"],
+  "tags": ["B-SEX", "O", "B-AGE", "B-CANCER_TYPE", "I-CANCER_TYPE", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Man", "with", "prostate", "cancer", "48", "years", "old", "Baton", "Rouge"],
+  "tags": ["B-SEX", "O", "B-CANCER_TYPE", "I-CANCER_TYPE", "B-AGE", "I-AGE", "I-AGE", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["I'm", "53", "female", "lung", "cancer", "in", "Richmond", "Virginia"],
+  "tags": ["O", "B-AGE", "B-SEX", "B-CANCER_TYPE", "I-CANCER_TYPE", "O", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Breast", "cancer", "male", "66", "Spokane", "Washington"],
+  "tags": ["B-CANCER_TYPE", "I-CANCER_TYPE", "B-SEX", "B-AGE", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Woman", "60", "prostate", "cancer", "Des", "Moines"],
+  "tags": ["B-SEX", "B-AGE", "B-CANCER_TYPE", "I-CANCER_TYPE", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Lung", "cancer", "patient", "44", "male", "Boise", "Idaho"],
+  "tags": ["B-CANCER_TYPE", "I-CANCER_TYPE", "O", "B-AGE", "B-SEX", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Female", "68", "breast", "cancer", "in", "Little", "Rock"],
+  "tags": ["B-SEX", "B-AGE", "B-CANCER_TYPE", "I-CANCER_TYPE", "O", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["I", "have", "prostate", "cancer", "and", "live", "in", "Portland", "Oregon"],
+  "tags": ["O", "O", "B-CANCER_TYPE", "I-CANCER_TYPE", "O", "O", "O", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Male", "51", "lung", "cancer", "Grand", "Rapids"],
+  "tags": ["B-SEX", "B-AGE", "B-CANCER_TYPE", "I-CANCER_TYPE", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Woman", "age", "73", "breast", "cancer", "Providence", "Rhode", "Island"],
+  "tags": ["B-SEX", "O", "B-AGE", "B-CANCER_TYPE", "I-CANCER_TYPE", "B-LOCATION", "I-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Prostate", "cancer", "42", "male", "Salt", "Lake", "City", "Utah"],
+  "tags": ["B-CANCER_TYPE", "I-CANCER_TYPE", "B-AGE", "B-SEX", "B-LOCATION", "I-LOCATION", "I-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["I'm", "a", "59", "year", "old", "female", "with", "lung", "cancer", "in", "Huntsville"],
+  "tags": ["O", "O", "B-AGE", "I-AGE", "I-AGE", "B-SEX", "O", "B-CANCER_TYPE", "I-CANCER_TYPE", "O", "B-LOCATION"]},
+  
+  {"tokens": ["Breast", "cancer", "male", "patient", "67", "Mobile", "Alabama"],
+  "tags": ["B-CANCER_TYPE", "I-CANCER_TYPE", "B-SEX", "O", "B-AGE", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Female", "54", "prostate", "cancer", "Tallahassee", "Florida"],
+  "tags": ["B-SEX", "B-AGE", "B-CANCER_TYPE", "I-CANCER_TYPE", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Man", "with", "lung", "cancer", "62", "years", "old", "Worcester", "Massachusetts"],
+  "tags": ["B-SEX", "O", "B-CANCER_TYPE", "I-CANCER_TYPE", "B-AGE", "I-AGE", "I-AGE", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["I", "am", "47", "male", "breast", "cancer", "in", "Ontario", "California"],
+  "tags": ["O", "O", "B-AGE", "B-SEX", "B-CANCER_TYPE", "I-CANCER_TYPE", "O", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Prostate", "cancer", "in", "Chattanooga", "Tennessee"],
+  "tags": ["B-CANCER_TYPE", "I-CANCER_TYPE", "O", "B-LOCATION", "I-LOCATION"]},
+  
+  {"tokens": ["Female", "patient", "63", "lung", "cancer", "near", "Knoxville"],
+  "tags": ["B-SEX", "O", "B-AGE", "B-CANCER_TYPE", "I-CANCER_TYPE", "O", "B-LOCATION"]}
+]
