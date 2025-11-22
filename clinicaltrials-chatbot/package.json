@@ -11,6 +11,8 @@
   "dependencies": {
     "@chatscope/chat-ui-kit-react": "^2.1.1",
     "@chatscope/chat-ui-kit-styles": "^1.4.0",
+    "@dotlottie/dotlottie-js": "^1.6.0",
+    "@lottiefiles/dotlottie-react": "^0.17.8",
     "@radix-ui/react-slot": "^1.2.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
