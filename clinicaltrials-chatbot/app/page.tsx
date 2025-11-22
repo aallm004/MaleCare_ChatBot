@@ -11,7 +11,7 @@ export default function ChatPage() {
   const [showChat, setShowChat] = useState(false);
   const [promptVisible, setPromptVisible] = useState(true);
 
-  // Chat state
+  // Chat state uses variables from backend
   const [messages, setMessages] = useState<Array<{ id: number; from: "bot" | "user"; text: string; time: string }>>([
     { id: 1, from: "bot", text: "Hello! How can I help you?", time: new Date().toLocaleTimeString() },
     { id: 2, from: "user", text: "Find trials for breast cancer", time: new Date().toLocaleTimeString() },
@@ -21,7 +21,7 @@ export default function ChatPage() {
   const [scrollPercent, setScrollPercent] = useState(100);
   const [sliderLength, setSliderLength] = useState(240);
 
-  // Auto-scroll to bottom when messages change
+  // Auto-scroll to bottom when messages come in
   useEffect(() => {
     const el = listRef.current;
     if (el) {
@@ -84,29 +84,29 @@ export default function ChatPage() {
     <div className="min-h-screen flex flex-col items-center justify-center p-4 space-y-6">
       {/* Initial Prompt Box */}
       {!showChat && promptVisible && (
-<div className="relative border border-color-teal rounded-2xl shadow-xl p-6 w-full max-w-md text-center space-y-4 animate-fadeIn">
-  <button
-    type="button"
-    aria-label="Close prompt"
-    className="absolute top-3 right-3 p-1 rounded-md hover:bg-gray-100"
-    onClick={() => setPromptVisible(false)}
-  >
-    <X className="h-4 w-4" aria-hidden />
-  </button>
-  <h2 className="text-xl font-semibold text-teal-300">Are you looking for a clinical trial?</h2>
+        <div className="relative border border-color-teal rounded-2xl shadow-xl p-6 w-full max-w-md text-center space-y-4 animate-fadeIn">
+          <button
+            type="button"
+            aria-label="Close prompt"
+            className="absolute top-3 right-3 p-1 rounded-md hover:bg-gray-100"
+            onClick={() => setPromptVisible(false)}
+          >
+            <X className="h-4 w-4" aria-hidden />
+          </button>
+          <h2 className="text-xl font-semibold text-teal-300">Are you looking for a clinical trial?</h2>
 
-  <Button
-    className="w-46 py-3 text-lg rounded-xl bg-red-300 text-teal-100"
-    onClick={() => setShowChat(true)}
-  >
-    Chat with Bot Carrie
-  </Button>
+          <Button
+            className="w-46 py-3 text-lg rounded-xl bg-red-300 text-teal-100"
+            onClick={() => setShowChat(true)}
+          >
+            Chat with Bot Carrie
+          </Button>
 
-  <LottiePlayer
-    src="https://lottie.host/a04b146d-7246-4edd-9af3-c8dcd38589e9/UfllrLR1Du.lottie"
-    className="mx-auto max-w-xs"
-  />
-</div>
+          <LottiePlayer
+            src="https://lottie.host/a04b146d-7246-4edd-9af3-c8dcd38589e9/UfllrLR1Du.lottie"
+            className="mx-auto max-w-xs"
+          />
+        </div>
       )}
 
       {/* Chatbox appears when user clicks */}
@@ -120,7 +120,7 @@ export default function ChatPage() {
           <h1 className="text-2xl font-bold text-center text-teal-300 animate-fadeIn">Chat with Bot Carrie</h1>
 
           <div className="relative max-w-md mx-auto w-full">
-            <Card className="p-4 space-y-4 w-full animate-fadeIn">
+            <Card className="p-2 space-y-2 w-full animate-fadeIn">
               {/* the backend messages will go here */}
               <CardContent ref={listRef} onScroll={updateScrollPercent} className="h-96 overflow-y-auto flex flex-col gap-8">
               {messages.map((m) => (
@@ -152,7 +152,7 @@ export default function ChatPage() {
               <form onSubmit={handleSubmit} className="flex gap-2 hover:bg-red-300">
               <Input value={inputValue} onChange={(e) => setInputValue(e.target.value)} placeholder="Ask about a clinical trial..." />
               <Button type="submit" className="text-teal-300 hover:bg-red-300">Send</Button>
-            </form>
+              </form>
                         {/* Disclaimer footer below the input */}
                         <div className="mt-3 text-xs text-muted-foreground text-center px-2">
                           <p>
@@ -171,7 +171,7 @@ export default function ChatPage() {
             </Card>
 
             {/* Vertical slider control on the right to control scroll position */}
-            <div className="absolute right-0 top-4 bottom-4 flex items-center pr-2 overflow-visible">
+            <div className="absolute right-0 top-4 bottom-4 flex items-center pr-2  overflow-visible hidden md:block">
               <input
                 aria-label="Scroll chat"
                 type="range"
