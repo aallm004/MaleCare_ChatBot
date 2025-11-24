@@ -1,14 +1,19 @@
 import httpx
 from app.utils.config import settings
+from typing import Optional
 
-async def search_clinical_trials(condition: str, location: str):
+async def search_clinical_trials(
+        cancer_type: str,
+        location: str,
+        stage: Optional[str] = None,
+        age: Optional[int] = None
+    ):
     """
-    Pseudo-query to ClinicalTrials.gov API v2 (placeholder).
-    In production, build query parameters correctly per their docs.
+    Query to ClinicalTrials.gov API v2.
     """
     base_url = settings.CLINICALTRIALS_API_BASE
     params = {
-        "query.term": condition,
+        "query.term": cancer_type,
         "filter.overallStatus": "Recruiting",
         "filter.location": location,
         "pageSize": 3
