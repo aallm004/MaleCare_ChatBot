@@ -10,14 +10,13 @@ class ConversationState:
         self.location: Optional[str] = None
         self.comorbidities: List[str] = []
         self.prior_treatments: List[str] = []
+        self.intake_complete: bool = False # tracks form submission
 
     def is_complete(self) -> bool:
         """Check if enough info is collected to query trials."""
-        required_fields = [self.cancer_type, self.location]
-        return all(required_fields)
+        return self._intake_complete and self.cancer_type and self.location
 
     def to_dict(self):
         return self.__dict__
 
-# In production, you’d persist state per user session (e.g., Redis, in-memory store)
 active_states = {}
