@@ -52,3 +52,5 @@ timestamp,user_id,cancer_type,stage,age,sex,location,intake_response_time,intake
 2025-11-29T09:21:00.190345,william_745,prostate cancer,stage 3,78,male,Seattle Washington,0.264638,200,,0.65925,200,,1,1.491303,True
 2025-11-29T09:51:01.703089,amelia_958,breast cancer,stage 3,72,female,Houston Texas,0.268935,200,,0.675035,200,,1,1.531126,True
 2025-11-29T10:21:03.257450,oliver_252,prostate cancer,stage 1,65,male,Los Angeles California,0.319832,200,,0.674977,200,,1,1.573183,True
+2025-11-29T10:51:04.852917,mason_646,prostate cancer,stage 1,51,male,Houston Texas,0.272582,200,,1.289822,200,,1,2.655676,True
+2025-11-29T11:21:07.525437,olivia_246,lung cancer,stage 3,57,female,Seattle Washington,0.264161,200,,0.66625,200,,1,1.529106,True
