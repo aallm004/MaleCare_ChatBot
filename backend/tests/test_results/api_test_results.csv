@@ -28,3 +28,27 @@ timestamp,user_id,cancer_type,stage,age,sex,location,intake_response_time,intake
 2025-11-28T21:20:20.785524,benjamin_333,lung cancer,stage 2,45,male,Denver Colorado,0.270981,200,,0.660858,200,,1,1.510469,True
 2025-11-28T21:50:22.323929,isabella_579,lung cancer,stage 4,77,female,New York New York,0.300049,200,,0.7742,200,,1,1.645241,True
 2025-11-28T22:20:24.021851,lucas_533,prostate cancer,stage 3,67,male,Atlanta Georgia,0.379039,200,,0.818713,200,,1,1.84897,True
+2025-11-28T22:50:25.901317,oliver_173,prostate cancer,stage 2,77,male,Boston Massachusetts,0.284837,200,,1.616209,200,,1,2.575825,True
+2025-11-28T23:20:28.498226,lucas_472,prostate cancer,stage 1,54,male,Boston Massachusetts,0.298645,200,,0.728684,200,,1,1.593095,True
+2025-11-28T23:50:30.115797,isabella_690,breast cancer,stage 4,49,female,Chicago Illinois,0.269836,200,,0.689119,200,,1,1.52308,True
+2025-11-29T00:20:31.651033,william_515,lung cancer,stage 4,51,male,Seattle Washington,0.267733,200,,0.728086,200,,1,1.576002,True
+2025-11-29T00:50:33.237163,olivia_749,breast cancer,stage 2,42,female,Miami Florida,0.26807,200,,0.705382,200,,1,1.545223,True
+2025-11-29T01:20:34.802778,william_847,prostate cancer,stage 3,63,male,Boston Massachusetts,0.263329,200,,0.710979,200,,1,1.560734,True
+2025-11-29T01:50:36.382467,isabella_966,breast cancer,stage 3,62,female,Phoenix Arizona,0.278284,200,,0.754329,200,,1,1.60749,True
+2025-11-29T02:20:38.013164,lucas_318,prostate cancer,stage 3,56,male,Atlanta Georgia,0.286548,200,,0.677292,200,,1,1.585495,True
+2025-11-29T02:50:39.622126,elijah_250,lung cancer,stage 3,66,male,Chicago Illinois,0.26959,200,,0.700471,200,,1,1.536487,True
+2025-11-29T03:20:41.172380,olivia_205,lung cancer,stage 4,73,female,Houston Texas,0.268928,200,,0.705027,200,,1,1.610566,True
+2025-11-29T03:50:42.802249,noah_379,lung cancer,stage 3,74,male,Atlanta Georgia,0.265697,200,,0.693135,200,,1,1.572704,True
+2025-11-29T04:20:44.385107,evelyn_645,breast cancer,stage 1,63,female,Seattle Washington,0.288019,200,,0.713902,200,,1,1.603895,True
+2025-11-29T04:50:46.009209,isabella_178,breast cancer,stage 1,51,female,Seattle Washington,0.27462,200,,0.80352,200,,1,1.658531,True
+2025-11-29T05:20:47.687758,oliver_731,prostate cancer,stage 3,55,male,Houston Texas,0.268591,200,,0.70524,200,,1,1.528784,True
+2025-11-29T05:50:49.234728,logan_346,prostate cancer,stage 4,70,male,Phoenix Arizona,0.270926,200,,0.665518,200,,1,1.540158,True
+2025-11-29T06:20:50.794952,amelia_960,lung cancer,stage 2,70,female,Atlanta Georgia,0.292841,200,,0.700305,200,,1,1.562828,True
+2025-11-29T06:50:52.373371,logan_877,lung cancer,stage 1,79,male,Los Angeles California,0.274011,200,,0.773963,200,,1,1.641709,True
+2025-11-29T07:20:54.028286,emma_450,lung cancer,stage 1,70,female,Seattle Washington,0.266307,200,,0.705375,200,,1,1.556959,True
+2025-11-29T07:50:55.611442,benjamin_932,lung cancer,stage 2,49,male,Phoenix Arizona,0.269879,200,,0.661788,200,,1,1.486995,True
+2025-11-29T08:20:57.122238,amelia_524,breast cancer,stage 2,42,female,Houston Texas,0.276702,200,,0.65965,200,,1,1.511614,True
+2025-11-29T08:50:58.645167,logan_708,lung cancer,stage 4,45,male,Chicago Illinois,0.27293,200,,0.682192,200,,1,1.52013,True
+2025-11-29T09:21:00.190345,william_745,prostate cancer,stage 3,78,male,Seattle Washington,0.264638,200,,0.65925,200,,1,1.491303,True
+2025-11-29T09:51:01.703089,amelia_958,breast cancer,stage 3,72,female,Houston Texas,0.268935,200,,0.675035,200,,1,1.531126,True
+2025-11-29T10:21:03.257450,oliver_252,prostate cancer,stage 1,65,male,Los Angeles California,0.319832,200,,0.674977,200,,1,1.573183,True

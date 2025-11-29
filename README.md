@@ -433,34 +433,9 @@ tests/test_endpoints.py::test_full_conversation_flow PASSED   [100%]
 
 ---
 
-## 🔮 Future Enhancements
-
-### Planned Features
-
-- [ ] Persistent database for conversation history (PostgreSQL/MongoDB)
-- [ ] Real-time integration with ClinicalTrials.gov API
-- [ ] Advanced eligibility matching algorithm
-- [ ] Multi-turn conversation refinement
-- [ ] User authentication and authorization
-- [ ] Patient dashboard for saved trials
-- [ ] Email notifications for new matching trials
-- [ ] Multi-language support
-- [ ] Voice interface integration
-
-### Deployment
-
-- [ ] Docker containerization
-- [ ] Azure/AWS deployment configuration
-- [ ] CI/CD pipeline setup
-- [ ] Production environment configuration
-- [ ] Load balancing and scaling
-- [ ] Monitoring and logging (Application Insights)
-
----
-
 ## 🤝 Contributing
 
-Contributions are welcome! Please follow these steps:
+Please follow these steps:
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
@@ -478,7 +453,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 👥 Team
 
-MaleCare ChatBot Development Team
+MaleCare ChatBot Development Team - Abs, Rachael, Henry & Steve
 
 ---
 
@@ -491,7 +466,7 @@ For questions or issues:
 
 ---
 
-## 🙏 Acknowledgments
+## 🙏 Acknowledgments & Cited Knowledge
 
 - BioClinicalBERT model by Emily Alsentzer et al.
 - ClinicalTrials.gov for providing the clinical trials database
@@ -512,7 +487,7 @@ For questions or issues:
 - Added comprehensive automated test suite (8 tests)
 - Created interactive testing script (interactive_test.py)
 - Added PowerShell test script (test_api.ps1)
-- Improved error handling and graceful fallbacks
+- Improved error handling and fallback dialogue
 
 **Documentation:**
 - Complete backend README with testing instructions
@@ -524,14 +499,6 @@ For questions or issues:
 - Added missing ML dependencies (torch, transformers)
 - Added testing dependencies (pytest, pytest-cov)
 - Organized requirements.txt with comments
-
-### v0.1.0 - Initial Release
-
-- Basic chatbot functionality
-- FastAPI backend with NLP integration
-- Next.js frontend
-- BioClinicalBERT model integration
-- Basic intake form processing
 
 ---
 
