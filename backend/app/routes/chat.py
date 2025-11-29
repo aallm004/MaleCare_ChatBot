@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter
 from pydantic import BaseModel
 from typing import List, Optional
 import logging
@@ -18,6 +18,15 @@ class IntakeForm(BaseModel):
     location: str
     comorbidities: Optional[List[str]] = []
     prior_treatments: Optional[List[str]] = []
+
+
+class MessageRequest(BaseModel):
+    user_id: str
+    message: str
+
+
+class EndSessionRequest(BaseModel):
+    user_id: str
 
 @router.post("/intake")
 async def submit_intake(intake: IntakeForm):
@@ -47,11 +56,10 @@ async def submit_intake(intake: IntakeForm):
 
 
 @router.post("/message")
-async def handle_message(request: Request):
+async def handle_message(msg: MessageRequest):
     """Main chat entrypoint."""
-    data = await request.json()
-    user_input = data.get("message", "")
-    user_id = data.get("user_id", "default")
+    user_input = msg.message
+    user_id = msg.user_id
 
     # Retrieve or initialize user state
     state = active_states.get(user_id, ConversationState())
@@ -108,10 +116,9 @@ async def handle_message(request: Request):
     return response
 
 @router.post("/end-session")
-async def end_session(request: Request):
+async def end_session(req: EndSessionRequest):
     """Clear all session data when user exits."""
-    data = await request.json()
-    user_id = data.get("user_id")
+    user_id = req.user_id
     
     if user_id in active_states:
         del active_states[user_id]

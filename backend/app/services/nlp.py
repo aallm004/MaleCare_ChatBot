@@ -6,14 +6,18 @@ from transformers import (AutoTokenizer, AutoModelForSequenceClassification,
                           AutoModelForTokenClassification)
 from typing import Dict, Optional
 import logging
+import os
+from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
 # MODEL CONFIGURATION
 
 # Paths to trained BioClinicalBERT models
-INTENT_MODEL_PATH = "../models/intent_model"
-NER_MODEL_PATH = "../models/ner_model"
+# Get the project root directory (two levels up from this file)
+PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
+INTENT_MODEL_PATH = PROJECT_ROOT / "models" / "intent_model"
+NER_MODEL_PATH = PROJECT_ROOT / "models" / "ner_model"
 
 # Model loaded once at startup
 intent_model = None
@@ -54,31 +58,43 @@ def load_models():
     global intent_model, intent_tokenizer, ner_model, ner_tokenizer, device
 
     try:
+        # Check if model directories exist
+        if not INTENT_MODEL_PATH.exists():
+            logger.warning(f"Intent model not found at {INTENT_MODEL_PATH}")
+            logger.warning("NLP features will be limited. Run ML training to create models.")
+            return
+            
+        if not NER_MODEL_PATH.exists():
+            logger.warning(f"NER model not found at {NER_MODEL_PATH}")
+            logger.warning("NLP features will be limited. Run ML training to create models.")
+            return
+
         # Determine device
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         logger.info(f"Loading models on device: {device}")
 
         # Load Intent Classification Model
         logger.info(f"Loading intent model from {INTENT_MODEL_PATH}")
-        intent_tokenizer = AutoTokenizer.from_pretrained(INTENT_MODEL_PATH)
+        intent_tokenizer = AutoTokenizer.from_pretrained(str(INTENT_MODEL_PATH))
         intent_model = AutoModelForSequenceClassification.from_pretrained(
-            INTENT_MODEL_PATH)
+            str(INTENT_MODEL_PATH))
         intent_model.to(device)
         intent_model.eval()
         logger.info("Intent model loaded successfully")
 
         # Load NER Model
         logger.info(f"Loading NER model from {NER_MODEL_PATH}")
-        ner_tokenizer = AutoTokenizer.from_pretrained(NER_MODEL_PATH)
+        ner_tokenizer = AutoTokenizer.from_pretrained(str(NER_MODEL_PATH))
         ner_model = AutoModelForTokenClassification.from_pretrained(
-            NER_MODEL_PATH)
+            str(NER_MODEL_PATH))
         ner_model.to(device)
         ner_model.eval()
         logger.info("NER model loaded successfully")
 
     except Exception as e:
         logger.error(f"Error loading models: {str(e)}")
-        raise
+        logger.warning("Continuing without ML models - using fallback logic")
+        # Don't raise - let the app continue with fallback behavior
 
 
 def predict_intent(text: str) -> str:
