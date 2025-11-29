@@ -27,3 +27,4 @@ timestamp,user_id,cancer_type,stage,age,sex,location,intake_response_time,intake
 2025-11-28T20:50:19.067594,evelyn_497,lung cancer,stage 4,77,female,Chicago Illinois,0.309125,200,,0.7579,200,,1,1.695572,True
 2025-11-28T21:20:20.785524,benjamin_333,lung cancer,stage 2,45,male,Denver Colorado,0.270981,200,,0.660858,200,,1,1.510469,True
 2025-11-28T21:50:22.323929,isabella_579,lung cancer,stage 4,77,female,New York New York,0.300049,200,,0.7742,200,,1,1.645241,True
+2025-11-28T22:20:24.021851,lucas_533,prostate cancer,stage 3,67,male,Atlanta Georgia,0.379039,200,,0.818713,200,,1,1.84897,True
