@@ -228,7 +228,7 @@ def predict_entities(text: str) -> Dict[str, Optional[str]]:
         logger.error(f"Error extracting entities: {str(e)}")
         return {}
 
-def extract_entities(user_input: str) -> Dict[str, Optional[str]]:
+def extract_entities(user_input: str, intake_context: Optional[Dict] = None) -> Dict[str, Optional[str]]:
     """
     Main function
     Extracts intent and entities from user input.
@@ -247,8 +247,7 @@ def extract_entities(user_input: str) -> Dict[str, Optional[str]]:
             'age': '65'
         }
     """
-    print(f"NLP: Processing user input: {user_input}")
-    logger.info(f"Processing user input: {user_input}")
+    logger.info(f"Processing user input for entity extraction")
 
     # Get intent
     intent = predict_intent(user_input)
@@ -257,8 +256,7 @@ def extract_entities(user_input: str) -> Dict[str, Optional[str]]:
 
     # Get entities
     entities = predict_entities(user_input)
-    print(f"NLP: Extracted entities: {entities}")
-
+    logger.info("Entity extraction complete")
 
     # Build response
     result = {
@@ -269,9 +267,26 @@ def extract_entities(user_input: str) -> Dict[str, Optional[str]]:
         'sex': entities.get('sex')
     }
 
+    # Only use intake values if entity wasn't found in the current message
+    if intake_context:
+        if not result.get('cancer_type'):
+            result['cancer_type'] = intake_context.get('cancer_type')
+        if not result.get('location'):
+            result['location'] = intake_context.get('location')
+        if not result.get('age'):
+            result['age'] = intake_context.get('age')
+        if not result.get('sex'):
+            result['sex'] = intake_context.get('sex')
+        
+        # Always include stage from intake (not extracted by NER)
+        result['stage'] = intake_context.get('stage')
+        result['comorbidities'] = intake_context.get('comorbidities', [])
+        result['prior_treatments'] = intake_context.get('prior_treatments', [])
+        
+        print(f"NLP: After applying intake context: {result}")
+
     # Clean up None values from result (keeps response cleaner)
     result = {k: v for k, v in result.items() if v is not None}
 
-    print(f"NLP: Final result: {result}")
     logger.info(f"Final result: {result}")
     return result
