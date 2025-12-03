@@ -11,15 +11,54 @@ export default function ChatPage() {
   const [showChat, setShowChat] = useState(false);
   const [promptVisible, setPromptVisible] = useState(true);
 
+  // Questionnaire state
+  const [showQuestionnaire, setShowQuestionnaire] = useState(false);
+  const [formData, setFormData] = useState({
+    gender: "",
+    age: "",
+    state: "",
+    cancerType: "",
+    cancerStage: "",
+    comorbidities: "",
+    priorTreatments: "",
+  });
+
   // Chat state uses variables from backend
   const [messages, setMessages] = useState<Array<{ id: number; from: "bot" | "user"; text: string; time: string }>>([
-    { id: 1, from: "bot", text: "Hello! How can I help you?", time: new Date().toLocaleTimeString() },
-    { id: 2, from: "user", text: "Find trials for breast cancer", time: new Date().toLocaleTimeString() },
+    { id: 1, from: "bot", text: "Hello! I am Carrie, your personal chatbot to assist you in finding clinical trials!", time: new Date().toLocaleTimeString() },
   ]);
   const [inputValue, setInputValue] = useState("");
   const listRef = useRef<HTMLDivElement | null>(null);
   const [scrollPercent, setScrollPercent] = useState(100);
   const [sliderLength, setSliderLength] = useState(240);
+
+  // Greet and trigger questionnaire after chat opens
+  useEffect(() => {
+    if (showChat && !showQuestionnaire && messages.length === 1) {
+      // After 2 seconds, send the explanation message
+      const explanationTimeout = setTimeout(() => {
+        setMessages((m) => [
+          ...m,
+          {
+            id: Date.now(),
+            from: "bot",
+            text: "To better assist you in finding the best clinical trial for your needs I want to ask you a few questions about yourself. Please answer the following questions to the best of your knowledge. Once you have finished answering all of the questions press the send button.",
+            time: new Date().toLocaleTimeString(),
+          },
+        ]);
+      }, 3000);
+
+      // After 20 seconds total, show the questionnaire form
+      const formTimeout = setTimeout(() => {
+        setShowQuestionnaire(true);
+      }, 26000);
+
+      return () => {
+        clearTimeout(explanationTimeout);
+        clearTimeout(formTimeout);
+      };
+    }
+  }, [showChat]);
 
   // Auto-scroll to bottom when messages come in
   useEffect(() => {
@@ -56,6 +95,37 @@ export default function ChatPage() {
     setScrollPercent(pct);
   }
 
+  function handleFormChange(field: string, value: string) {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  }
+
+  function submitQuestionnaire() {
+    // Validate all fields are filled
+    if (!formData.gender || !formData.age || !formData.state || !formData.cancerType || !formData.cancerStage || !formData.comorbidities || !formData.priorTreatments) {
+      alert("Please fill in all fields before submitting.");
+      return;
+    }
+    // Log form data (in production, send to backend)
+    console.log("Questionnaire submitted:", formData);
+    // Add user's summary message to chat
+    const summaryText = `Age: ${formData.age}, Gender: ${formData.gender}, State: ${formData.state}, Cancer Type: ${formData.cancerType}, Stage: ${formData.cancerStage}, Comorbidities: ${formData.comorbidities}, Prior Treatments: ${formData.priorTreatments}`;
+    setMessages((m) => [...m, { id: Date.now(), from: "user", text: summaryText, time: new Date().toLocaleTimeString() }]);
+    // Simulate bot response after delay
+    setTimeout(() => {
+      setMessages((m) => [
+        ...m,
+        {
+          id: Date.now() + 1,
+          from: "bot",
+          text: "Thank you for providing that information! I am now searching for clinical trials that match your profile. Please wait a moment...",
+          time: new Date().toLocaleTimeString(),
+        },
+      ]);
+    }, 700);
+    // Hide form and return to chat
+    setShowQuestionnaire(false);
+  }
+
   function sendMessage(text: string) {
     const userMsg = { id: Date.now(), from: "user" as const, text, time: new Date().toLocaleTimeString() };
     setMessages((m) => [...m, userMsg]);
@@ -76,6 +146,16 @@ export default function ChatPage() {
     e.preventDefault();
     const trimmed = inputValue.trim();
     if (!trimmed) return;
+
+    // Check if all questionnaire fields are filled and form is visible
+    if (showQuestionnaire && (formData.gender && formData.age && formData.state && formData.cancerType && formData.cancerStage && formData.comorbidities && formData.priorTreatments)) {
+      // User is submitting the questionnaire via send button
+      submitQuestionnaire();
+      setInputValue("");
+      return;
+    }
+
+    // Otherwise, send as regular chat message
     sendMessage(trimmed);
     setInputValue("");
   }
@@ -96,7 +176,7 @@ export default function ChatPage() {
           <h2 className="text-xl font-semibold text-teal-300">Are you looking for a clinical trial?</h2>
 
           <Button
-            className="w-46 py-3 text-lg rounded-xl bg-red-300 text-teal-100"
+            className="w-46 py-3 text-lg rounded-xl hover:bg-red-300 text-teal-300"
             onClick={() => setShowChat(true)}
           >
             Chat with Bot Carrie
@@ -121,8 +201,8 @@ export default function ChatPage() {
 
           <div className="relative max-w-md mx-auto w-full">
             <Card className="p-2 space-y-2 w-full animate-fadeIn">
-              {/* the backend messages will go here */}
-              <CardContent ref={listRef} onScroll={updateScrollPercent} className="h-96 overflow-y-auto flex flex-col gap-8">
+              {/* Chat messages */}
+              <CardContent ref={listRef} onScroll={updateScrollPercent} className={`h-96 overflow-y-auto flex flex-col gap-8 ${showQuestionnaire ? "hidden" : ""}`}>
               {messages.map((m) => (
                 <div
                   key={m.id}
@@ -149,7 +229,76 @@ export default function ChatPage() {
 
               </CardContent>
 
-              <form onSubmit={handleSubmit} className="flex gap-2 hover:bg-red-300">
+              {/* Questionnaire Form */}
+              {showQuestionnaire && (
+                <CardContent className="h-96 overflow-y-auto flex flex-col gap-4 p-4">
+                  <div className="flex flex-col gap-4">
+                    {/* Gender */}
+                    <div>
+                      <label className="block text-sm font-semibold mb-2">1. What is the gender assigned to you at birth?</label>
+                      <div className="flex gap-4">
+                        <label className="flex items-center gap-2">
+                          <input type="radio" name="gender" value="Female" onChange={(e) => handleFormChange("gender", e.target.value)} required />
+                          Female
+                        </label>
+                        <label className="flex items-center gap-2">
+                          <input type="radio" name="gender" value="Male" onChange={(e) => handleFormChange("gender", e.target.value)} required />
+                          Male
+                        </label>
+                      </div>
+                    </div>
+
+                    {/* Age */}
+                    <div>
+                      <label className="block text-sm font-semibold mb-2">2. How old are you?</label>
+                      <Input type="number" placeholder="Enter your age" value={formData.age} onChange={(e) => handleFormChange("age", e.target.value)} required />
+                    </div>
+
+                    {/* State */}
+                    <div>
+                      <label className="block text-sm font-semibold mb-2">3. What state are you located in?</label>
+                      <Input type="text" placeholder="Enter your state" value={formData.state} onChange={(e) => handleFormChange("state", e.target.value)} required />
+                    </div>
+
+                    {/* Cancer Type */}
+                    <div>
+                      <label className="block text-sm font-semibold mb-2">4. Select the type of cancer are you looking for a trial for?</label>
+                      <select value={formData.cancerType} onChange={(e) => handleFormChange("cancerType", e.target.value)} className="w-full border rounded px-3 py-2" required>
+                        <option value="">Select cancer type...</option>
+                        <option value="Lung">Lung</option>
+                        <option value="Prostate">Prostate</option>
+                        <option value="Breast">Breast</option>
+                      </select>
+                    </div>
+
+                    {/* Cancer Stage */}
+                    <div>
+                      <label className="block text-sm font-semibold mb-2">5. What stage of cancer?</label>
+                      <select value={formData.cancerStage} onChange={(e) => handleFormChange("cancerStage", e.target.value)} className="w-full border rounded px-3 py-2" required>
+                        <option value="">Select stage...</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                      </select>
+                    </div>
+
+                    {/* Comorbidities */}
+                    <div>
+                      <label className="block text-sm font-semibold mb-2">6. List any comorbidities you have:</label>
+                      <Input type="text" placeholder="Enter comorbidities" value={formData.comorbidities} onChange={(e) => handleFormChange("comorbidities", e.target.value)} required />
+                    </div>
+
+                    {/* Prior Treatments */}
+                    <div>
+                      <label className="block text-sm font-semibold mb-2">7. What prior treatments, if any, have you had?</label>
+                      <Input type="text" placeholder="Enter prior treatments" value={formData.priorTreatments} onChange={(e) => handleFormChange("priorTreatments", e.target.value)} required />
+                    </div>
+                  </div>
+                </CardContent>
+              )}
+
+              <form onSubmit={handleSubmit} className="flex gap-2">
               <Input value={inputValue} onChange={(e) => setInputValue(e.target.value)} placeholder="Ask about a clinical trial..." />
               <Button type="submit" className="text-teal-300 hover:bg-red-300">Send</Button>
               </form>
@@ -170,38 +319,36 @@ export default function ChatPage() {
                         </div>
             </Card>
 
-            {/* Vertical slider control on the right to control scroll position */}
-            <div className="absolute right-0 top-4 bottom-4 flex items-center pr-2  overflow-visible hidden md:block">
-              <input
-                aria-label="Scroll chat"
-                type="range"
-                min={0}
-                max={100}
-                value={scrollPercent}
-                onKeyDown={(e) => {
-                  if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-                    e.preventDefault();
-                    const delta = e.key === "ArrowUp" ? -5 : 5;
-                    const next = Math.max(0, Math.min(100, scrollPercent + delta));
-                    setScrollPercent(next);
-                    const el = listRef.current;
-                    if (!el) return;
-                    const max = el.scrollHeight - el.clientHeight;
-                    el.scrollTop = Math.round((next / 100) * max);
-                  }
-                }}
-                onChange={(e) => {
-                  const v = Number(e.target.value);
-                  setScrollPercent(v);
+            {/* Hidden input for arrow key scroll control */}
+            <input
+              aria-label="Scroll chat with arrow keys"
+              type="range"
+              min={0}
+              max={100}
+              value={scrollPercent}
+              onKeyDown={(e) => {
+                if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+                  e.preventDefault();
+                  const delta = e.key === "ArrowUp" ? -5 : 5;
+                  const next = Math.max(0, Math.min(100, scrollPercent + delta));
+                  setScrollPercent(next);
                   const el = listRef.current;
                   if (!el) return;
                   const max = el.scrollHeight - el.clientHeight;
-                  el.scrollTop = Math.round((v / 100) * max);
-                }}
-                className="range-slider"
-                style={{ width: `${sliderLength}px`, transform: "rotate(-90deg)", transformOrigin: "center right" }}
-              />
-            </div>
+                  el.scrollTop = Math.round((next / 100) * max);
+                }
+              }}
+              onChange={(e) => {
+                const v = Number(e.target.value);
+                setScrollPercent(v);
+                const el = listRef.current;
+                if (!el) return;
+                const max = el.scrollHeight - el.clientHeight;
+                el.scrollTop = Math.round((v / 100) * max);
+              }}
+              className="sr-only"
+              tabIndex={-1}
+            />
           </div>
         </>
       )}
