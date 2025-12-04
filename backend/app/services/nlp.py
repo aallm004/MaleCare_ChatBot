@@ -12,8 +12,8 @@ logger = logging.getLogger(__name__)
 # MODEL CONFIGURATION
 
 # Paths to trained BioClinicalBERT models
-INTENT_MODEL_PATH = "../models/intent_model"
-NER_MODEL_PATH = "../models/ner_model"
+INTENT_MODEL_PATH = "app/services/saved_models/intent_model"
+NER_MODEL_PATH = "app/services/saved_models/ner_model"
 
 # Model loaded once at startup
 intent_model = None
