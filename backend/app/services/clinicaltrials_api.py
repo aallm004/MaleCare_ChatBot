@@ -29,7 +29,7 @@ async def search_clinical_trials(
         return [
             {
                 "nct_id": "NCT12345678",
-                "title": f"A Study for {condition} in {location}",
+                "title": f"A Study for {cancer_type} in {location}",
                 "phase": "Phase 2",
                 "status": "Recruiting",
                 "location": location,
