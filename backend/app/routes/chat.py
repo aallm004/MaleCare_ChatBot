@@ -48,10 +48,43 @@ async def submit_intake(intake: IntakeForm):
     # Persist state
     active_states[intake.user_id] = state
 
+    # Automatically search for clinical trials using the REAL API
+    logger.info(f"Searching for {intake.cancer_type} trials in {intake.location}")
+    trials = await clinicaltrials_api.search_clinical_trials(
+        cancer_type=intake.cancer_type,
+        location=intake.location,
+        stage=intake.stage,
+        age=intake.age
+    )
+
+    # Store trials in state
+    state.last_trials = trials
+
+    # Build response message
+    if trials:
+        num_trials = len(trials)
+        has_nationwide = any(t.get('is_nationwide') for t in trials)
+        
+        if has_nationwide:
+            response_msg = (
+                f"Thank you for sharing that information! I found clinical trials "
+                f"for {intake.cancer_type}. Here are options across the United States:"
+            )
+        else:
+            response_msg = (
+                f"Thank you for sharing that information! I found clinical trials "
+                f"for {intake.cancer_type}. Here are the nearest locations to you:"
+            )
+    else:
+        response_msg = (
+            "Thank you for sharing that information. I'm having trouble finding trials "
+            "right now. How else can I help you?"
+        )
+
     return {
-        "response": "Thank you for sharing that information with me. How can I"
-        " help you find clinical trials today?",
-        "intake_complete": True
+        "response": response_msg,
+        "intake_complete": True,
+        "trials": trials
     }
 
 
