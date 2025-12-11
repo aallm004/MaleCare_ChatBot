@@ -1,0 +1,13 @@
+MaleCare ChatBot - API Performance Test Summary
+================================================================================
+
+Total Tests: 11
+Success Rate: 100.0%
+
+Average Response Time: 1.639444 seconds
+Target (<3s): PASS
+
+Cancer Types Tested:
+  - breast cancer: 4 tests
+  - lung cancer: 1 tests
+  - prostate cancer: 6 tests
