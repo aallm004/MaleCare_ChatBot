@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { healthCheck, postChat } from "@/lib/api";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -24,16 +25,34 @@ export default function ChatPage() {
   });
 
   // Chat state uses variables from backend
-  const [messages, setMessages] = useState<Array<{ id: number; from: "bot" | "user"; text: string; time: string }>>([
+  type TrialResult = { nctId: string; title: string; condition: string; phase: string; location: string; url: string };
+  type UserMessage = { id: number; from: "user"; text: string; time: string };
+  type BotMessage = { id: number; from: "bot"; text: string; time: string; results?: TrialResult[] };
+  type Message = UserMessage | BotMessage;
+
+  const [messages, setMessages] = useState<Message[]>([
     { id: 1, from: "bot", text: "Hello! I am Carrie, your clinical trial finder chatbot. Let's find you a trial!", time: new Date().toLocaleTimeString() },
   ]);
   const [inputValue, setInputValue] = useState("");
   const listRef = useRef<HTMLDivElement | null>(null);
   const [scrollPercent, setScrollPercent] = useState(100);
   const [sliderLength, setSliderLength] = useState(240);
+  const [connectionStatus, setConnectionStatus] = useState<string | null>(null);
 
   // Greet and trigger questionnaire after chat opens
   useEffect(() => {
+    // Check backend health once on mount
+    (async () => {
+      const res = await healthCheck();
+      if (res.ok) {
+        console.info("Backend reachable at", res.path, res.status);
+        setConnectionStatus(`ok (${res.path})`);
+      } else {
+        console.warn("Backend not reachable", res);
+        setConnectionStatus(`unreachable`);
+      }
+    })();
+
     if (showChat && !showQuestionnaire && messages.length === 1) {
       // After 2 seconds, send the explanation message
       const explanationTimeout = setTimeout(() => {
@@ -58,6 +77,42 @@ export default function ChatPage() {
         clearTimeout(formTimeout);
       };
     }
+  }, [showChat]);
+
+  // Poll dev injection endpoint when chat is open (dev helper)
+  useEffect(() => {
+    let id: NodeJS.Timeout | null = null;
+    async function fetchInject() {
+      try {
+        const res = await fetch('/api/dev/inject');
+        if (!res.ok) return;
+        const json = await res.json();
+        if (json?.messages && Array.isArray(json.messages) && json.messages.length > 0) {
+          // normalize incoming messages and append
+          const toAdd = json.messages.map((m: any) => ({
+            id: m.id || Date.now() + Math.floor(Math.random() * 1000),
+            from: m.from || 'bot',
+            text: m.text || '',
+            time: m.time || new Date().toLocaleTimeString(),
+            results: m.results || undefined,
+          }));
+          setMessages((prev) => [...prev, ...toAdd]);
+        }
+      } catch (e) {
+        // ignore
+      }
+    }
+
+    if (showChat) {
+      // immediate check
+      fetchInject();
+      // poll every 3s while chat open
+      id = setInterval(fetchInject, 3000);
+    }
+
+    return () => {
+      if (id) clearInterval(id);
+    };
   }, [showChat]);
 
   // Auto-scroll to bottom when messages come in
@@ -110,18 +165,39 @@ export default function ChatPage() {
     // Add user's summary message to chat
     const summaryText = `Age: ${formData.age}, Gender: ${formData.gender}, State: ${formData.state}, Cancer Type: ${formData.cancerType}, Stage: ${formData.cancerStage}, Comorbidities: ${formData.comorbidities}, Prior Treatments: ${formData.priorTreatments}`;
     setMessages((m) => [...m, { id: Date.now(), from: "user", text: summaryText, time: new Date().toLocaleTimeString() }]);
-    // Simulate bot response after delay
-    setTimeout(() => {
-      setMessages((m) => [
-        ...m,
-        {
-          id: Date.now() + 1,
-          from: "bot",
-          text: "Thank you for providing that information! I am now searching for clinical trials that match your profile. Please wait a moment...",
-          time: new Date().toLocaleTimeString(),
-        },
-      ]);
-    }, 700);
+    // Send questionnaire to backend and show response (fallback to simulated reply)
+    (async () => {
+      try {
+        const res = await postChat({ type: 'questionnaire', data: formData });
+        if (res?.results && Array.isArray(res.results) && res.results.length > 0) {
+          const results: TrialResult[] = res.results.map((r: any) => ({
+            nctId: r.nctId || '',
+            title: r.title || '',
+            condition: r.condition || '',
+            phase: r.phase || '',
+            location: r.location || '',
+            url: r.url || '',
+          }));
+          setMessages((prev: Message[]) => [
+            ...prev,
+            { id: Date.now() + 1, from: 'bot', text: `I found ${results.length} trials that might match. Click to view details.`, time: new Date().toLocaleTimeString(), results },
+          ]);
+        } else {
+          const reply = res?.reply || 'Thank you — we received your information and are searching for matches.';
+          setMessages((prev: Message[]) => [...prev, { id: Date.now() + 1, from: 'bot', text: reply, time: new Date().toLocaleTimeString() }]);
+        }
+      } catch (err) {
+        setTimeout(() => {
+          const botMsg: BotMessage = {
+            id: Date.now() + 1,
+            from: 'bot',
+            text: 'Thank you for providing that information! I am now searching for clinical trials that match your profile. Please wait a moment...',
+            time: new Date().toLocaleTimeString(),
+          };
+          setMessages((prev: Message[]) => [...prev, botMsg]);
+        }, 700);
+      }
+    })();
     // Hide form and return to chat
     setShowQuestionnaire(false);
   }
@@ -130,16 +206,37 @@ export default function ChatPage() {
     const userMsg = { id: Date.now(), from: "user" as const, text, time: new Date().toLocaleTimeString() };
     setMessages((m) => [...m, userMsg]);
 
-    // Simulate bot reply after a short delay
-    setTimeout(() => {
-      const botMsg = {
-        id: Date.now() + 1,
-        from: "bot" as const,
-        text: `I found several trials related to \"${text}\". Would you like me to filter by location or phase?`,
-        time: new Date().toLocaleTimeString(),
-      };
-      setMessages((m) => [...m, botMsg]);
-    }, 700);
+    // Send to backend and append reply (fallback to simulated reply)
+    (async () => {
+      try {
+        const res = await postChat({ type: 'message', text });
+        if (res?.results && Array.isArray(res.results) && res.results.length > 0) {
+          const results: TrialResult[] = res.results.map((r: any) => ({
+            nctId: r.nctId || '',
+            title: r.title || '',
+            condition: r.condition || '',
+            phase: r.phase || '',
+            location: r.location || '',
+            url: r.url || '',
+          }));
+          setMessages((prev: Message[]) => [...prev, { id: Date.now() + 1, from: 'bot', text: `I found ${results.length} trials for "${text}".`, time: new Date().toLocaleTimeString(), results }]);
+        } else {
+          const botText = res?.reply || `I found several trials related to \"${text}\". Would you like me to filter by location or phase?`;
+          setMessages((prev: Message[]) => [...prev, { id: Date.now() + 1, from: 'bot', text: botText, time: new Date().toLocaleTimeString() }]);
+        }
+      } catch (err) {
+        // Fallback simulated reply
+        setTimeout(() => {
+          const botMsg: BotMessage = {
+            id: Date.now() + 1,
+            from: 'bot',
+            text: `I found several trials related to \"${text}\". Would you like me to filter by location or phase?`,
+            time: new Date().toLocaleTimeString(),
+          };
+          setMessages((prev: Message[]) => [...prev, botMsg]);
+        }, 700);
+      }
+    })();
   }
 
   function handleSubmit(e: React.FormEvent) {
@@ -204,19 +301,29 @@ export default function ChatPage() {
               {/* Chat messages */}
               <CardContent ref={listRef} onScroll={updateScrollPercent} className={`h-96 overflow-y-auto flex flex-col gap-8 ${showQuestionnaire ? "hidden" : ""}`}>
               {messages.map((m) => (
-                <div
-                  key={m.id}
-                  className={`flex items-end ${m.from === "user" ? "justify-end" : "justify-start"}`}>
+                <div key={m.id} className={`flex items-end ${m.from === "user" ? "justify-end" : "justify-start"}`}>
                   {m.from === "bot" && (
                     <div className="flex-shrink-0 mr-3">
                       <div className="h-12 w-12 rounded-full bg-red-300 flex items-center justify-center text-teal-100 font-semibold">Carrie</div>
                     </div>
                   )}
 
-                  <div className={`px-3 py-2 rounded-2xl max-w-[80%] ${m.from === "user" ? "bg-blue-100" : "bg-red-300"} animate-fadeIn`}> 
+                  <div className={`px-3 py-2 rounded-2xl max-w-[80%] ${m.from === "user" ? "bg-blue-100" : "bg-red-300"} animate-fadeIn`}>
                     <div className="whitespace-pre-wrap">{m.text}</div>
-                    {/* provides a timestamp of conversation  */}
                     <div className="text-xs text-muted-foreground mt-1 text-right">{m.time}</div>
+
+                    {/* Render structured results if present (bot messages only) */}
+                    {'results' in m && m.results && m.results.length > 0 && (
+                      <div className="mt-3 grid grid-cols-1 gap-2">
+                        {m.results.map((r) => (
+                          <a key={r.nctId} href={r.url} target="_blank" rel="noopener noreferrer" className="block p-3 bg-white/20 rounded-lg hover:bg-white/30">
+                            <div className="font-semibold">{r.title || r.nctId}</div>
+                            <div className="text-xs mt-1">{r.condition}</div>
+                            <div className="text-xs mt-1">Phase: {r.phase || 'N/A'} — Location: {r.location || 'N/A'}</div>
+                          </a>
+                        ))}
+                      </div>
+                    )}
                   </div>
 
                   {m.from === "user" && (
@@ -286,7 +393,7 @@ export default function ChatPage() {
                     {/* Comorbidities */}
                     <div>
                       <label className="block text-sm font-semibold mb-2">6. List any other diseases or medical conditions you have:</label>
-                      <Input type="text" placeholder="Enter comorbidities" value={formData.comorbidities} onChange={(e) => handleFormChange("comorbidities", e.target.value)} required />
+                      <Input type="text" placeholder="Enter medical condition" value={formData.comorbidities} onChange={(e) => handleFormChange("comorbidities", e.target.value)} required />
                     </div>
 
                     {/* Prior Treatments */}
