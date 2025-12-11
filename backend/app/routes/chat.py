@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter
 from pydantic import BaseModel
 from typing import List, Optional
 import logging
@@ -18,6 +18,15 @@ class IntakeForm(BaseModel):
     location: str
     comorbidities: Optional[List[str]] = []
     prior_treatments: Optional[List[str]] = []
+
+
+class MessageRequest(BaseModel):
+    user_id: str
+    message: str
+
+
+class EndSessionRequest(BaseModel):
+    user_id: str
 
 @router.post("/intake")
 async def submit_intake(intake: IntakeForm):
@@ -39,19 +48,51 @@ async def submit_intake(intake: IntakeForm):
     # Persist state
     active_states[intake.user_id] = state
 
+    # Automatically search for clinical trials using the REAL API
+    logger.info(f"Searching for {intake.cancer_type} trials in {intake.location}")
+    trials = await clinicaltrials_api.search_clinical_trials(
+        cancer_type=intake.cancer_type,
+        location=intake.location,
+        stage=intake.stage,
+        age=intake.age
+    )
+
+    # Store trials in state
+    state.last_trials = trials
+
+    # Build response message
+    if trials:
+        num_trials = len(trials)
+        has_nationwide = any(t.get('is_nationwide') for t in trials)
+        
+        if has_nationwide:
+            response_msg = (
+                f"Thank you for sharing that information! I found clinical trials "
+                f"for {intake.cancer_type}. Here are options across the United States:"
+            )
+        else:
+            response_msg = (
+                f"Thank you for sharing that information! I found clinical trials "
+                f"for {intake.cancer_type}. Here are the nearest locations to you:"
+            )
+    else:
+        response_msg = (
+            "Thank you for sharing that information. I'm having trouble finding trials "
+            "right now. How else can I help you?"
+        )
+
     return {
-        "response": "Thank you for sharing that information with me. How can I"
-        " help you find clinical trials today?",
-        "intake_complete": True
+        "response": response_msg,
+        "intake_complete": True,
+        "trials": trials
     }
 
 
 @router.post("/message")
-async def handle_message(request: Request):
+async def handle_message(msg: MessageRequest):
     """Main chat entrypoint."""
-    data = await request.json()
-    user_input = data.get("message", "")
-    user_id = data.get("user_id", "default")
+    user_input = msg.message
+    user_id = msg.user_id
 
     # Retrieve or initialize user state
     state = active_states.get(user_id, ConversationState())
@@ -108,10 +149,9 @@ async def handle_message(request: Request):
     return response
 
 @router.post("/end-session")
-async def end_session(request: Request):
+async def end_session(req: EndSessionRequest):
     """Clear all session data when user exits."""
-    data = await request.json()
-    user_id = data.get("user_id")
+    user_id = req.user_id
     
     if user_id in active_states:
         del active_states[user_id]
