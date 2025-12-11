@@ -25,7 +25,7 @@ export default function ChatPage() {
 
   // Chat state uses variables from backend
   const [messages, setMessages] = useState<Array<{ id: number; from: "bot" | "user"; text: string; time: string }>>([
-    { id: 1, from: "bot", text: "Hello! I am Carrie, your personal chatbot to assist you in finding clinical trials!", time: new Date().toLocaleTimeString() },
+    { id: 1, from: "bot", text: "Hello! I am Carrie, your clinical trial finder chatbot. Let's find you a trial!", time: new Date().toLocaleTimeString() },
   ]);
   const [inputValue, setInputValue] = useState("");
   const listRef = useRef<HTMLDivElement | null>(null);
@@ -42,7 +42,7 @@ export default function ChatPage() {
           {
             id: Date.now(),
             from: "bot",
-            text: "To better assist you in finding the best clinical trial for your needs I want to ask you a few questions about yourself. Please answer the following questions to the best of your knowledge. Once you have finished answering all of the questions press the send button.",
+            text: "First, if you don't mind, let me ask you just seven questions to narrow down our choices. Do your best to answer, and then, press the find a trial button.",
             time: new Date().toLocaleTimeString(),
           },
         ]);
@@ -51,7 +51,7 @@ export default function ChatPage() {
       // After 20 seconds total, show the questionnaire form
       const formTimeout = setTimeout(() => {
         setShowQuestionnaire(true);
-      }, 26000);
+      }, 15000);
 
       return () => {
         clearTimeout(explanationTimeout);
@@ -173,10 +173,10 @@ export default function ChatPage() {
           >
             <X className="h-4 w-4" aria-hidden />
           </button>
-          <h2 className="text-xl font-semibold text-teal-300">Are you looking for a clinical trial?</h2>
+          <h2 className="text-xl font-semibold text-[#1159af]">Are you looking for a clinical trial?</h2>
 
           <Button
-            className="w-46 py-3 text-lg rounded-xl hover:bg-red-300 text-teal-300"
+            className="w-46 py-3 text-lg rounded-xl bg-[#1159af] hover:bg-red-300 text-teal-300"
             onClick={() => setShowChat(true)}
           >
             Chat with Bot Carrie
@@ -197,7 +197,7 @@ export default function ChatPage() {
             className="mx-auto max-w-xs"
           />
 
-          <h1 className="text-2xl font-bold text-center text-teal-300 animate-fadeIn">Chat with Bot Carrie</h1>
+          <h1 className="text-2xl font-bold text-center text-[#1159af] animate-fadeIn">Chat with Bot Carrie</h1>
 
           <div className="relative max-w-md mx-auto w-full">
             <Card className="p-2 space-y-2 w-full animate-fadeIn">
@@ -285,22 +285,23 @@ export default function ChatPage() {
 
                     {/* Comorbidities */}
                     <div>
-                      <label className="block text-sm font-semibold mb-2">6. List any comorbidities you have:</label>
+                      <label className="block text-sm font-semibold mb-2">6. List any other diseases or medical conditions you have:</label>
                       <Input type="text" placeholder="Enter comorbidities" value={formData.comorbidities} onChange={(e) => handleFormChange("comorbidities", e.target.value)} required />
                     </div>
 
                     {/* Prior Treatments */}
                     <div>
-                      <label className="block text-sm font-semibold mb-2">7. What prior treatments, if any, have you had?</label>
+                      <label className="block text-sm font-semibold mb-2">7. What kind of treatments have you done for your current cancer?</label>
                       <Input type="text" placeholder="Enter prior treatments" value={formData.priorTreatments} onChange={(e) => handleFormChange("priorTreatments", e.target.value)} required />
                     </div>
+                    <Button className="mt-4 w-full bg-[#1159af] text-teal-300 hover:bg-red-300" onClick={submitQuestionnaire}>Find a Trial</Button>
                   </div>
                 </CardContent>
               )}
 
               <form onSubmit={handleSubmit} className="flex gap-2">
               <Input value={inputValue} onChange={(e) => setInputValue(e.target.value)} placeholder="Ask about a clinical trial..." />
-              <Button type="submit" className="text-teal-300 hover:bg-red-300">Send</Button>
+              <Button type="submit" className="bg-[#1159af] text-teal-300 hover:bg-red-300">Send</Button>
               </form>
                         {/* Disclaimer footer below the input */}
                         <div className="mt-3 text-xs text-muted-foreground text-center px-2">
