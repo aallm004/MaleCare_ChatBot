@@ -3,6 +3,8 @@ import path from 'path';
 import { NextResponse } from 'next/server';
 
 const FILE = path.resolve(process.cwd(), '.dev_inject.json');
+const isProd = process.env.NODE_ENV === 'production';
+
 
 function isValidMessage(m: any) {
   if (!m || typeof m !== 'object') return false;
@@ -14,35 +16,36 @@ function isValidMessage(m: any) {
 
 async function writeMessages(messages: any[]) {
   // If Vercel KV enabled, use it; otherwise fallback to filesystem for local dev.
-  if (process.env.VERCEL_KV_ENABLED === '1') {
-    try {
-      const { kv } = await import('@vercel/kv');
-      await kv.set('dev_inject_messages', JSON.stringify(messages));
-      return;
-    } catch (e) {
-      // fallback
-    }
+ if (!isProd && process.env.VERCEL_KV_ENABLED === '1') {
+  try {
+    const { kv } = await import('@vercel/kv');
+    await kv.set('dev_inject_messages', JSON.stringify(messages));
+    return;
+  } catch {
+    // fallback to filesystem
   }
+}
+
 
   fs.writeFileSync(FILE, JSON.stringify(messages, null, 2));
 }
 
 async function readAndClearMessages() {
-  if (process.env.VERCEL_KV_ENABLED === '1') {
+  if (!isProd && process.env.VERCEL_KV_ENABLED === '1') {
+  try {
+    const { kv } = await import('@vercel/kv');
+    const val = await kv.get('dev_inject_messages');
+    if (!val) return [];
+    await kv.del('dev_inject_messages');
     try {
-      const { kv } = await import('@vercel/kv');
-      const val = await kv.get('dev_inject_messages');
-      if (!val) return [];
-      await kv.del('dev_inject_messages');
-      try {
-        return JSON.parse(val as string);
-      } catch (e) {
-        return [];
-      }
-    } catch (e) {
-      // fallback
+      return JSON.parse(val as string);
+    } catch {
+      return [];
     }
+  } catch {
+    // fallback to filesystem
   }
+}
 
   if (!fs.existsSync(FILE)) return [];
   const raw = fs.readFileSync(FILE, 'utf-8');
