@@ -14,10 +14,14 @@ logger = logging.getLogger(__name__)
 # MODEL CONFIGURATION
 
 # Paths to trained BioClinicalBERT models
-# Get the project root directory (two levels up from this file)
-PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
-INTENT_MODEL_PATH = PROJECT_ROOT / "models" / "intent_model"
-NER_MODEL_PATH = PROJECT_ROOT / "models" / "ner_model"
+# Determine project and model directories. Allow overrides via environment variables
+# Default project root (four levels up from this file)
+DEFAULT_PROJECT_ROOT = Path(__file__).resolve().parents[3]
+PROJECT_ROOT = Path(os.getenv("PROJECT_ROOT", DEFAULT_PROJECT_ROOT))
+# Allow explicit model directory override (e.g., set MODEL_DIR in Render)
+MODEL_BASE = Path(os.getenv("MODEL_DIR", PROJECT_ROOT / "models"))
+INTENT_MODEL_PATH = MODEL_BASE / "intent_model"
+NER_MODEL_PATH = MODEL_BASE / "ner_model"
 
 # Model loaded once at startup
 intent_model = None
