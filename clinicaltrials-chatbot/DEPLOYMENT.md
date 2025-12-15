@@ -27,10 +27,6 @@ Notes:
 - The workflow requires `jq` to parse JSON; `ubuntu-latest` includes it by default. If anything fails, check the Actions run logs.
 - For production, you may want to set the Vercel env var manually in the Vercel dashboard instead of using the workflow.
 
-## Vercel KV (recommended for injection in production)
-- The dev injection route in `app/api/dev/inject/route.ts` supports Vercel KV when `VERCEL_KV_ENABLED=1`.
-- To enable on Vercel, provision a Vercel KV instance, add its connection variables to your Vercel project, and set `VERCEL_KV_ENABLED=1` in Vercel Environment Variables.
-
 ## Manual steps to connect backend and frontend
 1. Deploy backend to Render:
    - Create a new Web Service on Render, connect your backend repo (or the same monorepo backend folder), and set build/start commands as described in the backend README.
