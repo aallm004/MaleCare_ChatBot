@@ -363,7 +363,7 @@ export default function ChatPage() {
 
                     {/* State */}
                     <div>
-                      <label className="block text-sm font-semibold mb-2">3. What state are you located in?</label>
+                      <label className="block text-sm font-semibold mb-2">3. What city and state are you located in?</label>
                       <Input type="text" placeholder="Enter your state" value={formData.state} onChange={(e) => handleFormChange("state", e.target.value)} required />
                     </div>
 
