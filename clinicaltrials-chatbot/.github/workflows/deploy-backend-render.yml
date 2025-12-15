@@ -1,0 +1,61 @@
+name: Deploy backend to Render and update Vercel env
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-backend:
+    runs-on: ubuntu-latest
+    env:
+      RENDER_API_URL: https://api.render.com/v1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Trigger Render deploy
+        id: trigger
+        run: |
+          if [ -z "${{ secrets.RENDER_SERVICE_ID }}" ] || [ -z "${{ secrets.RENDER_API_KEY }}" ]; then
+            echo "RENDER_SERVICE_ID and RENDER_API_KEY must be set in repo secrets";
+            exit 1;
+          fi
+          resp=$(curl -s -X POST "$RENDER_API_URL/services/${{ secrets.RENDER_SERVICE_ID }}/deploys" -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" -H "Content-Type: application/json" -d '{}')
+          echo "trigger_resp=$resp" >> $GITHUB_OUTPUT
+
+      - name: Wait for Render deploy to register
+        run: |
+          # poll service for defaultDomain
+          for i in {1..20}; do
+            svc=$(curl -s -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" "$RENDER_API_URL/services/${{ secrets.RENDER_SERVICE_ID }}")
+            domain=$(echo "$svc" | jq -r '.defaultDomain // empty')
+            if [ -n "$domain" ]; then
+              echo "service_domain=$domain" >> $GITHUB_OUTPUT
+              echo "Found domain: $domain"
+              exit 0
+            fi
+            echo "waiting for domain... ($i)"
+            sleep 6
+          done
+          echo "Failed to obtain service domain"; exit 1
+
+      - name: Set NEXT_PUBLIC_API_BASE_URL on Vercel
+        if: ${{ secrets.VERCEL_TOKEN && secrets.VERCEL_PROJECT_ID }}
+        run: |
+          if [ -z "${{ secrets.VERCEL_TOKEN }}" ] || [ -z "${{ secrets.VERCEL_PROJECT_ID }}" ]; then
+            echo "VERCEL_TOKEN and VERCEL_PROJECT_ID must be set in repo secrets";
+            exit 1;
+          fi
+          domain="${{ steps.trigger.outputs.service_domain }}"
+          if [ -z "$domain" ]; then
+            # try reading from previous step output
+            domain=$(cat $GITHUB_OUTPUT | sed -n 's/^service_domain=//p' | tail -n1)
+          fi
+          if [ -z "$domain" ]; then echo "No domain to set"; exit 1; fi
+          url="https://$domain"
+          echo "Setting NEXT_PUBLIC_API_BASE_URL=$url on Vercel project ${{ secrets.VERCEL_PROJECT_ID }}"
+          curl -s -X POST "https://api.vercel.com/v9/projects/${{ secrets.VERCEL_PROJECT_ID }}/env" \
+            -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{"key":"NEXT_PUBLIC_API_BASE_URL","value":"'"$url"'","target":["preview","production","development"]}'
