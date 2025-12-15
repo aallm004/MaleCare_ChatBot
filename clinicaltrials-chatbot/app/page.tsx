@@ -56,7 +56,7 @@ export default function ChatPage() {
     if (showChat && !showQuestionnaire && messages.length === 1) {
       // After 2 seconds, send the explanation message
       const explanationTimeout = setTimeout(() => {
-        setMessages((m) => [
+        setMessages((m: Message[]) => [
           ...m,
           {
             id: Date.now(),
@@ -96,7 +96,7 @@ export default function ChatPage() {
             time: m.time || new Date().toLocaleTimeString(),
             results: m.results || undefined,
           }));
-          setMessages((prev) => [...prev, ...toAdd]);
+          setMessages((prev: Message[]) => [...prev, ...toAdd]);
         }
       } catch (e) {
         // ignore
@@ -151,7 +151,7 @@ export default function ChatPage() {
   }
 
   function handleFormChange(field: string, value: string) {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    setFormData((prev: typeof formData) => ({ ...prev, [field]: value }));
   }
 
   function submitQuestionnaire() {
@@ -164,7 +164,7 @@ export default function ChatPage() {
     console.log("Questionnaire submitted:", formData);
     // Add user's summary message to chat
     const summaryText = `Age: ${formData.age}, Gender: ${formData.gender}, State: ${formData.state}, Cancer Type: ${formData.cancerType}, Stage: ${formData.cancerStage}, Comorbidities: ${formData.comorbidities}, Prior Treatments: ${formData.priorTreatments}`;
-    setMessages((m) => [...m, { id: Date.now(), from: "user", text: summaryText, time: new Date().toLocaleTimeString() }]);
+    setMessages((m: Message[]) => [...m, { id: Date.now(), from: "user", text: summaryText, time: new Date().toLocaleTimeString() }]);
     // Send questionnaire to backend and show response (fallback to simulated reply)
     (async () => {
       try {
@@ -204,7 +204,7 @@ export default function ChatPage() {
 
   function sendMessage(text: string) {
     const userMsg = { id: Date.now(), from: "user" as const, text, time: new Date().toLocaleTimeString() };
-    setMessages((m) => [...m, userMsg]);
+    setMessages((m: Message[]) => [...m, userMsg]);
 
     // Send to backend and append reply (fallback to simulated reply)
     (async () => {
@@ -239,7 +239,7 @@ export default function ChatPage() {
     })();
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
     const trimmed = inputValue.trim();
     if (!trimmed) return;
@@ -300,7 +300,7 @@ export default function ChatPage() {
             <Card className="p-2 space-y-2 w-full animate-fadeIn">
               {/* Chat messages */}
               <CardContent ref={listRef} onScroll={updateScrollPercent} className={`h-96 overflow-y-auto flex flex-col gap-8 ${showQuestionnaire ? "hidden" : ""}`}>
-              {messages.map((m) => (
+              {messages.map((m: Message) => (
                 <div key={m.id} className={`flex items-end ${m.from === "user" ? "justify-end" : "justify-start"}`}>
                   {m.from === "bot" && (
                     <div className="flex-shrink-0 mr-3">
@@ -315,7 +315,7 @@ export default function ChatPage() {
                     {/* Render structured results if present (bot messages only) */}
                     {'results' in m && m.results && m.results.length > 0 && (
                       <div className="mt-3 grid grid-cols-1 gap-2">
-                        {m.results.map((r) => (
+                        {m.results.map((r: TrialResult) => (
                           <a key={r.nctId} href={r.url} target="_blank" rel="noopener noreferrer" className="block p-3 bg-white/20 rounded-lg hover:bg-white/30">
                             <div className="font-semibold">{r.title || r.nctId}</div>
                             <div className="text-xs mt-1">{r.condition}</div>

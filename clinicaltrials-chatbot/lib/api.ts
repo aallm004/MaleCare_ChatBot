@@ -1,8 +1,8 @@
 const DEFAULT_BACKEND = 'http://localhost:8000';
 
 const getBaseUrl = () => {
-  // Use NEXT_PUBLIC_API_BASE_URL if provided, otherwise default to local backend
-  if (typeof process !== 'undefined' && process.env.NEXT_PUBLIC_API_BASE_URL) return process.env.NEXT_PUBLIC_API_BASE_URL;
+  // Use NEXT_PUBLIC_API_URL if provided (Vercel env var), otherwise default to local backend
+  if (typeof process !== 'undefined' && process.env.NEXT_PUBLIC_API_URL) return process.env.NEXT_PUBLIC_API_URL;
   return DEFAULT_BACKEND;
 };
 
