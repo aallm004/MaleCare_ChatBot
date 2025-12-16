@@ -1,7 +1,0 @@
-{
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "cd clinicaltrials-chatbot && npm install && npm run build",
-  "outputDirectory": "clinicaltrials-chatbot/.next",
-  "framework": "nextjs",
-  "installCommand": "cd clinicaltrials-chatbot && npm install"
-}
