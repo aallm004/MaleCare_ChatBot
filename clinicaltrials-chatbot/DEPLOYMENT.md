@@ -36,9 +36,6 @@ Notes:
    - Import the repo into Vercel.
    - Set env var `NEXT_PUBLIC_API_URL` to the Render service domain (e.g., `https://your-service.onrender.com`).
 
-## Security
-- `app/api/dev/inject/route.ts` supports `REQUIRE_INJECT_SECRET=1` and `DEV_INJECT_SECRET` for protection. When deploying to Vercel, enable `REQUIRE_INJECT_SECRET` and set `DEV_INJECT_SECRET` in Vercel env variables.
-
 ## Troubleshooting
 - If the frontend cannot contact the backend, check `NEXT_PUBLIC_API_URL` and CORS settings on the backend.
 - Check GitHub Actions logs for deploy errors and Render dashboard for build failures.
