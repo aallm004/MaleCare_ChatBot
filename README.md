@@ -1,8 +1,8 @@
-# MaleCare Clinical Trials Chatbot 🏥
+# MaleCare Clinical Trials Chatbot
 
 AI-powered chatbot that helps cancer patients find relevant clinical trials using BioClinicalBERT NLP models and the ClinicalTrials.gov API.
 
-## 🎯 Overview
+## Overview
 
 MaleCare ChatBot is a full-stack application designed to help cancer patients discover clinical trials that match their specific medical profile. The system uses natural language processing to understand patient queries and matches them with appropriate clinical trials.
 
@@ -16,7 +16,7 @@ MaleCare ChatBot is a full-stack application designed to help cancer patients di
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 MaleCare_ChatBot/
@@ -32,8 +32,6 @@ MaleCare_ChatBot/
 
 **Backend:**
 - FastAPI (Python web framework)
-- BioClinicalBERT (NLP models)
-- PyTorch & Transformers
 - ClinicalTrials.gov API v2
 
 **Frontend:**
@@ -45,10 +43,12 @@ MaleCare_ChatBot/
 **ML/AI:**
 - Intent Classification Model (greeting, find_trials, goodbye)
 - Named Entity Recognition (NER) for medical entities
+- BioClinicalBERT (NLP model)
+- Pytorch & Transformers
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -98,7 +98,7 @@ The frontend will be available at **http://localhost:3000**
 
 ---
 
-## 🧪 Testing
+## Testing
 
 ### Automated Tests (Recommended)
 
@@ -119,14 +119,14 @@ pytest tests/test_endpoints.py::test_full_conversation_flow -v -s
 ```
 
 **Test Coverage:**
-- ✅ Health check endpoint
-- ✅ Patient intake form submission
-- ✅ Message handling and validation
-- ✅ Greeting intent recognition
-- ✅ Clinical trial search functionality
-- ✅ Goodbye intent recognition
-- ✅ Session management
-- ✅ Full end-to-end conversation flow
+-  Health check endpoint
+-  Patient intake form submission
+-  Message handling and validation
+-  Greeting intent recognition
+-  Clinical trial search functionality
+-  Goodbye intent recognition
+-  Session management
+-  Full end-to-end conversation flow
 
 ### Interactive Testing
 
@@ -195,7 +195,7 @@ curl -X POST http://localhost:8000/end-session -H "Content-Type: application/jso
 
 ---
 
-## 📡 API Endpoints
+## API Endpoints
 
 | Endpoint | Method | Description |
 |----------|--------|-------------|
@@ -236,7 +236,7 @@ POST /end-session
 
 ---
 
-## 🤖 NLP Models
+## NLP Models
 
 The chatbot uses two fine-tuned BioClinicalBERT models:
 
@@ -268,7 +268,7 @@ python train_models.py
 
 ---
 
-## 🔧 Recent Changes & Bug Fixes
+## Recent Changes & Bug Fixes
 
 ### Bug Fixes (November 28, 2025)
 
@@ -311,7 +311,7 @@ python train_models.py
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 MaleCare_ChatBot/
@@ -361,7 +361,7 @@ MaleCare_ChatBot/
 
 ---
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Common Issues & Solutions
 
@@ -409,7 +409,7 @@ python train_models.py
 
 ---
 
-## 📊 Test Results
+## Test Results
 
 ### Latest Test Run (November 28, 2025)
 
@@ -429,11 +429,11 @@ tests/test_endpoints.py::test_full_conversation_flow PASSED   [100%]
 ===================== 8 passed in 21.64s =========================
 ```
 
-**All tests passing!** ✅
+**All tests passing!** 
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Please follow these steps:
 
@@ -445,19 +445,19 @@ Please follow these steps:
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
 ---
 
-## 👥 Team
+## Team
 
-MaleCare ChatBot Development Team - Abs, Rachael, Henry & Steve
+MaleCare ChatBot Development Team - Abigail Aleman, Rachael Bradford, Henry Nguyen & Steve Reed
 
 ---
 
-## 📞 Support
+## Support
 
 For questions or issues:
 - Open an issue on GitHub
@@ -466,7 +466,7 @@ For questions or issues:
 
 ---
 
-## 🙏 Acknowledgments & Cited Knowledge
+## Acknowledgments & Cited Knowledge
 
 - BioClinicalBERT model by Emily Alsentzer et al.
 - ClinicalTrials.gov for providing the clinical trials database
@@ -474,7 +474,7 @@ For questions or issues:
 
 ---
 
-## 📝 Changelog
+## Changelog
 
 ### v0.2.0 - November 28, 2025 (Steve's Updates)
 
